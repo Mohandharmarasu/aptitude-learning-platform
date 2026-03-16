@@ -57,7 +57,7 @@ export default function TopicLearning() {
     // Transition
     path.data(pie(data))
       .transition()
-      .duration(1000)
+      .duration(500)
       .attrTween("d", function(d) {
         const interpolate = d3.interpolate((this as any)._current, d);
         (this as any)._current = interpolate(0);
@@ -139,7 +139,7 @@ export default function TopicLearning() {
     const speedText = info.append("text").attr("y", 70).attr("font-weight", "bold").attr("fill", "#10B981").text("Speed: 0 m/s");
 
     if (step > 0) {
-      const duration = step === 1 ? 4000 : 2000; // Step 1 is slow, Step 2 is fast
+      const duration = step === 1 ? 2000 : 1000; // Faster durations
       const speed = step === 1 ? 25 : 50; // m/s equivalent for demo
       
       speedText.text(`Speed: ${speed} m/s`);
@@ -229,7 +229,7 @@ export default function TopicLearning() {
       .attr("stroke-dasharray", totalLength + " " + totalLength)
       .attr("stroke-dashoffset", totalLength)
       .transition()
-      .duration(2000)
+      .duration(800)
       .ease(d3.easeLinear)
       .attr("stroke-dashoffset", 0);
 
@@ -304,7 +304,7 @@ export default function TopicLearning() {
         .attr("stroke-width", 2);
 
       a.transition()
-        .duration(1000)
+        .duration(500)
         .attr("r", 40);
 
       svg.append("text").attr("x", centerX).attr("y", centerY + 100).attr("text-anchor", "middle").text("All A are B");
@@ -318,6 +318,109 @@ export default function TopicLearning() {
         .attr("fill", "#999")
         .text("Interactive Solver Active Below ↓");
     }
+  }, [topic, step]);
+
+  // D3 Animation for Average
+  useEffect(() => {
+    if (!vizRef.current || !topic || topic.name !== "Average") return;
+
+    const svg = d3.select(vizRef.current);
+    svg.selectAll("*").remove();
+
+    const width = 400;
+    const height = 300;
+    const bars = [10, 30, 50, 20, 40];
+    const avg = bars.reduce((a, b) => a + b, 0) / bars.length;
+
+    const x = d3.scaleBand().domain(bars.map((_, i) => i.toString())).range([50, 350]).padding(0.2);
+    const y = d3.scaleLinear().domain([0, 60]).range([250, 50]);
+
+    svg.selectAll("rect")
+      .data(bars)
+      .enter()
+      .append("rect")
+      .attr("x", (_, i) => x(i.toString())!)
+      .attr("y", d => y(d))
+      .attr("width", x.bandwidth())
+      .attr("height", d => 250 - y(d))
+      .attr("fill", "#E5E7EB")
+      .attr("rx", 4);
+
+    if (step > 0) {
+      svg.append("line")
+        .attr("x1", 40)
+        .attr("y1", y(avg))
+        .attr("x2", 360)
+        .attr("y2", y(avg))
+        .attr("stroke", "#10B981")
+        .attr("stroke-width", 3)
+        .attr("stroke-dasharray", "5,5")
+        .style("opacity", 0)
+        .transition()
+        .duration(1000)
+        .style("opacity", 1);
+
+      svg.append("text")
+        .attr("x", 365)
+        .attr("y", y(avg))
+        .attr("dominant-baseline", "middle")
+        .attr("fill", "#10B981")
+        .attr("font-weight", "bold")
+        .attr("font-size", "12px")
+        .text(`Avg: ${avg}`);
+    }
+  }, [topic, step]);
+
+  // D3 Animation for Interest
+  useEffect(() => {
+    if (!vizRef.current || !topic || !["Simple Interest", "Compound Interest"].includes(topic.name)) return;
+
+    const svg = d3.select(vizRef.current);
+    svg.selectAll("*").remove();
+
+    const width = 400;
+    const height = 300;
+    const isCompound = topic.name === "Compound Interest";
+    
+    const data = Array.from({ length: 11 }, (_, i) => {
+      const p = 100;
+      const r = 0.1;
+      const t = i;
+      return {
+        year: t,
+        value: isCompound ? p * Math.pow(1 + r, t) : p + (p * r * t)
+      };
+    });
+
+    const x = d3.scaleLinear().domain([0, 10]).range([60, 340]);
+    const y = d3.scaleLinear().domain([0, 300]).range([240, 60]);
+
+    const g = svg.append("g");
+
+    // Axes
+    g.append("g").attr("transform", "translate(0, 240)").call(d3.axisBottom(x).ticks(5));
+    g.append("g").attr("transform", "translate(60, 0)").call(d3.axisLeft(y).ticks(5));
+
+    const line = d3.line<any>()
+      .x(d => x(d.year))
+      .y(d => y(d.value))
+      .curve(isCompound ? d3.curveBasis : d3.curveLinear);
+
+    const path = g.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "#10B981")
+      .attr("stroke-width", 3)
+      .attr("d", line);
+
+    const totalLength = (path.node() as any).getTotalLength();
+    path
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+      .duration(2000)
+      .attr("stroke-dashoffset", 0);
+
   }, [topic, step]);
 
   const getSteps = () => {
@@ -396,6 +499,45 @@ export default function TopicLearning() {
             tip: "Try combining 'All' and 'Some' statements."
           }
         ];
+      case "Average":
+        return [
+          {
+            title: "Central Tendency",
+            content: "An average is a single value that represents the middle or center of a set of data. It is calculated by dividing the sum of all values by the number of values.",
+            tip: "Average = Sum / Count"
+          },
+          {
+            title: "Equal Distribution",
+            content: "Think of an average as distributing the total sum equally among all members of the group.",
+            tip: "If the average of 5 numbers is 10, their sum is 50."
+          }
+        ];
+      case "Simple Interest":
+        return [
+          {
+            title: "Basic Interest",
+            content: "Simple Interest is calculated only on the principal amount of a loan or investment.",
+            tip: "SI = (P × R × T) / 100"
+          },
+          {
+            title: "Linear Growth",
+            content: "Simple interest grows linearly over time because the interest earned each period is constant.",
+            tip: "Interest is the same every year."
+          }
+        ];
+      case "Compound Interest":
+        return [
+          {
+            title: "Interest on Interest",
+            content: "Compound Interest is calculated on the principal amount and also on the accumulated interest of previous periods.",
+            tip: "A = P(1 + R/100)^T"
+          },
+          {
+            title: "Exponential Growth",
+            content: "Compound interest grows exponentially, making it much more powerful than simple interest over long periods.",
+            tip: "The 'Magic' of compounding!"
+          }
+        ];
       default:
         return [
           {
@@ -457,12 +599,13 @@ export default function TopicLearning() {
               Step {step + 1} of {steps.length}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{steps[step].title}</h1>
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
               <motion.p
                 key={step}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.2 }}
                 className="text-lg text-gray-600 leading-relaxed"
               >
                 {steps[step].content}

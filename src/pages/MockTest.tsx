@@ -19,6 +19,7 @@ export default function MockTest() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
   const [isFinished, setIsFinished] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function MockTest() {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timerRef.current!);
-          setIsFinished(true);
+          handleFinish();
           return 0;
         }
         return prev - 1;
@@ -46,9 +47,28 @@ export default function MockTest() {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     clearInterval(timerRef.current!);
     setIsFinished(true);
+    
+    // Calculate score
+    const score = questions.reduce((acc, q) => (answers[q.id] === q.correct_answer ? acc + 1 : acc), 0);
+    
+    // Submit to leaderboard
+    await fetch("/api/leaderboard", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_name: "You",
+        score: score * 100, // Scale score for leaderboard
+        type: "mock"
+      })
+    });
+
+    // Fetch leaderboard
+    const lbRes = await fetch("/api/leaderboard/mock");
+    const lbData = await lbRes.json();
+    setLeaderboard(lbData);
   };
 
   if (isFinished) {
@@ -64,57 +84,101 @@ export default function MockTest() {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="max-w-4xl mx-auto space-y-8 pb-20"
+        className="max-w-6xl mx-auto space-y-8 pb-20"
       >
-        <div className="bg-white rounded-[3rem] border border-black/5 shadow-xl p-12 text-center space-y-8">
-          <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
-            <Trophy size={48} />
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold">Test Completed!</h1>
-            <p className="text-gray-500">Great effort! Here's your performance breakdown.</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 bg-white rounded-[3rem] border border-black/5 shadow-xl p-12 text-center space-y-8 h-fit">
+            <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+              <Trophy size={48} />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold">Test Completed!</h1>
+              <p className="text-gray-500">Great effort! Here's your performance breakdown.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-8">
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Score</p>
+                <h2 className="text-5xl font-bold">{score} / {questions.length}</h2>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Accuracy</p>
+                <h2 className="text-5xl font-bold text-emerald-500">{accuracy}%</h2>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Time Spent</p>
+                <h2 className="text-5xl font-bold">{formatTime(600 - timeLeft)}</h2>
+              </div>
+            </div>
+
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={resultData} cx="50%" cy="50%" innerRadius={80} outerRadius={100} paddingAngle={5} dataKey="value">
+                    <Cell fill="#10B981" />
+                    <Cell fill="#EF4444" />
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="flex justify-center gap-4">
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-8 py-4 bg-gray-100 hover:bg-gray-200 rounded-2xl font-bold flex items-center gap-2 transition-all"
+              >
+                <RotateCcw size={20} /> Retake Test
+              </button>
+              <button 
+                onClick={() => window.location.href = "/dashboard"}
+                className="px-8 py-4 bg-[#151619] text-white hover:bg-emerald-500 hover:text-black rounded-2xl font-bold flex items-center gap-2 transition-all"
+              >
+                View Dashboard <BarChart3 size={20} />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-8">
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Score</p>
-              <h2 className="text-5xl font-bold">{score} / {questions.length}</h2>
+          {/* Leaderboard Sidebar */}
+          <div className="bg-white rounded-[3rem] border border-black/5 shadow-xl p-8 space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600">
+                <Trophy size={20} />
+              </div>
+              <h3 className="text-xl font-bold">Leaderboard</h3>
             </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Accuracy</p>
-              <h2 className="text-5xl font-bold text-emerald-500">{accuracy}%</h2>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Time Spent</p>
-              <h2 className="text-5xl font-bold">{formatTime(600 - timeLeft)}</h2>
-            </div>
-          </div>
 
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={resultData} cx="50%" cy="50%" innerRadius={80} outerRadius={100} paddingAngle={5} dataKey="value">
-                  <Cell fill="#10B981" />
-                  <Cell fill="#EF4444" />
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+            <div className="space-y-4">
+              {leaderboard.map((entry, idx) => (
+                <div 
+                  key={idx} 
+                  className={cn(
+                    "flex items-center justify-between p-4 rounded-2xl border transition-all",
+                    entry.user_name === "You" ? "bg-emerald-50 border-emerald-200" : "bg-gray-50 border-black/5"
+                  )}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                      idx === 0 ? "bg-amber-100 text-amber-600" : 
+                      idx === 1 ? "bg-slate-100 text-slate-600" :
+                      idx === 2 ? "bg-orange-100 text-orange-600" : "bg-gray-200 text-gray-600"
+                    )}>
+                      {idx + 1}
+                    </span>
+                    <span className="font-bold">{entry.user_name}</span>
+                  </div>
+                  <span className="font-mono font-bold text-emerald-600">{entry.score}</span>
+                </div>
+              ))}
+            </div>
 
-          <div className="flex justify-center gap-4">
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-8 py-4 bg-gray-100 hover:bg-gray-200 rounded-2xl font-bold flex items-center gap-2 transition-all"
-            >
-              <RotateCcw size={20} /> Retake Test
-            </button>
-            <button 
-              onClick={() => window.location.href = "/dashboard"}
-              className="px-8 py-4 bg-[#151619] text-white hover:bg-emerald-500 hover:text-black rounded-2xl font-bold flex items-center gap-2 transition-all"
-            >
-              View Dashboard <BarChart3 size={20} />
-            </button>
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3">
+              <BarChart3 size={18} className="text-blue-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-blue-700 leading-relaxed">
+                Your rank is based on your highest mock test score this week. Keep practicing to climb!
+              </p>
+            </div>
           </div>
         </div>
       </motion.div>

@@ -44,6 +44,14 @@ db.exec(`
     score INTEGER DEFAULT 0,
     PRIMARY KEY(user_id, topic_id)
   );
+
+  CREATE TABLE IF NOT EXISTS leaderboard (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_name TEXT,
+    score INTEGER,
+    type TEXT, -- 'mock', 'daily', 'weekly'
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // Seed some initial data if empty
@@ -55,6 +63,9 @@ if (topicCount.count === 0) {
   insertTopic.run("Quantitative", "Speed and Distance", "Relative motion and travel time.");
   insertTopic.run("Logical", "Syllogisms", "Deductive reasoning from premises.");
   insertTopic.run("Verbal", "Reading Comprehension", "Analyzing and interpreting text.");
+  insertTopic.run("Quantitative", "Average", "Calculating the central value of a set.");
+  insertTopic.run("Quantitative", "Simple Interest", "Basic interest calculations on principal.");
+  insertTopic.run("Quantitative", "Compound Interest", "Interest calculated on principal and accumulated interest.");
 }
 
 // Robust Seeding: Check each topic individually
@@ -103,6 +114,42 @@ seedTopicQuestions(5, [
   { text: "Passage: 'Climate change is no longer a distant threat but a present reality. Melting ice caps and rising sea levels are clear indicators.' Question: What is the main theme of the passage?", options: ["Melting ice caps", "Sustainable energy", "Urgency of climate change", "Extreme weather"], correct: "Urgency of climate change", explanation: "The passage emphasizes that climate change is a 'present reality'.", difficulty: "Medium" }
 ]);
 
+// Average (Topic ID: 6)
+seedTopicQuestions(6, [
+  { text: "Find the average of first five prime numbers.", options: ["3.6", "5.6", "7.2", "8.2"], correct: "5.6", explanation: "First five prime numbers are 2, 3, 5, 7, 11. Sum = 28. Average = 28/5 = 5.6", difficulty: "Easy" },
+  { text: "The average of 7 consecutive numbers is 20. The largest of these numbers is:", options: ["20", "22", "23", "24"], correct: "23", explanation: "Let the numbers be x, x+1, ..., x+6. Average = (7x + 21)/7 = x + 3 = 20 => x = 17. Largest = 17 + 6 = 23.", difficulty: "Medium" }
+]);
+
+// Simple Interest (Topic ID: 7)
+seedTopicQuestions(7, [
+  { text: "Find the simple interest on ₹5000 at 10% per annum for 2 years.", options: ["₹500", "₹1000", "₹1500", "₹2000"], correct: "₹1000", explanation: "SI = (P * R * T) / 100 = (5000 * 10 * 2) / 100 = 1000", difficulty: "Easy" },
+  { text: "At what rate of simple interest will a sum of money double itself in 8 years?", options: ["10%", "12.5%", "15%", "20%"], correct: "12.5%", explanation: "Let P be principal. SI = P. P = (P * R * 8) / 100 => R = 100/8 = 12.5%", difficulty: "Medium" }
+]);
+
+// Compound Interest (Topic ID: 8)
+seedTopicQuestions(8, [
+  { text: "Find the compound interest on ₹10000 at 10% per annum for 2 years, compounded annually.", options: ["₹2000", "₹2100", "₹2200", "₹2300"], correct: "₹2100", explanation: "Amount = P(1 + R/100)^T = 10000(1.1)^2 = 12100. CI = 12100 - 10000 = 2100", difficulty: "Medium" },
+  { text: "The difference between SI and CI on a certain sum at 10% per annum for 2 years is ₹50. Find the sum.", options: ["₹4000", "₹5000", "₹6000", "₹7000"], correct: "₹5000", explanation: "Difference = P(R/100)^2 => 50 = P(10/100)^2 = P(1/100) => P = 5000", difficulty: "Hard" }
+]);
+
+// Seed some leaderboard data
+const lbCount = db.prepare("SELECT COUNT(*) as count FROM leaderboard").get() as { count: number };
+if (lbCount.count === 0) {
+  const insertLB = db.prepare("INSERT INTO leaderboard (user_name, score, type) VALUES (?, ?, ?)");
+  insertLB.run("Aarav", 950, "mock");
+  insertLB.run("Ishita", 920, "mock");
+  insertLB.run("Vihaan", 880, "mock");
+  insertLB.run("Ananya", 850, "mock");
+  insertLB.run("Kabir", 820, "mock");
+  
+  insertLB.run("Aarav", 100, "daily");
+  insertLB.run("Ishita", 90, "daily");
+  insertLB.run("Vihaan", 85, "daily");
+  
+  insertLB.run("Ananya", 500, "weekly");
+  insertLB.run("Kabir", 480, "weekly");
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -136,6 +183,40 @@ async function startServer() {
       options: JSON.parse(q.options)
     }));
     res.json(parsedQuestions);
+  });
+
+  app.get("/api/leaderboard/:type", (req, res) => {
+    const { type } = req.params;
+    const results = db.prepare("SELECT * FROM leaderboard WHERE type = ? ORDER BY score DESC LIMIT 10").all(type);
+    res.json(results);
+  });
+
+  app.post("/api/leaderboard", (req, res) => {
+    const { user_name, score, type } = req.body;
+    db.prepare("INSERT INTO leaderboard (user_name, score, type) VALUES (?, ?, ?)").run(user_name, score, type);
+    res.json({ status: "ok" });
+  });
+
+  app.get("/api/challenges", (req, res) => {
+    // Mock challenges for now
+    res.json([
+      {
+        id: 1,
+        type: "daily",
+        title: "Daily Speed Drill",
+        description: "Solve 5 speed and distance problems in 2 minutes.",
+        xp: 20,
+        timeLeft: "14h 22m"
+      },
+      {
+        id: 2,
+        type: "weekly",
+        title: "Weekly Quant Master",
+        description: "Complete 50 quantitative questions this week.",
+        xp: 200,
+        timeLeft: "3d 10h"
+      }
+    ]);
   });
 
   // Vite middleware for development
