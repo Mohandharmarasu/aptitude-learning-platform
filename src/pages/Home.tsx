@@ -82,63 +82,67 @@ export default function Home() {
       )}
 
       {/* Topics Grid */}
-      <section className="space-y-8">
-        <div className="flex items-end justify-between">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight">
-              {category ? `${category} Aptitude` : "Learning Modules"}
-            </h2>
-            <p className="text-gray-500">
-              {category ? `Master your ${category.toLowerCase()} skills.` : "Choose a category to start your visual journey."}
-            </p>
-          </div>
-        </div>
+      <section className="space-y-12">
+        {categories.map((cat) => {
+          const catTopics = topics.filter((t) => t.category === cat);
+          if (catTopics.length === 0) return null;
 
-        <div className={category ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "grid grid-cols-1 md:grid-cols-3 gap-8"}>
-          {categories.map((cat, idx) => (
-            <div key={cat} className={category ? "contents" : "space-y-4"}>
-              {!category && (
-                <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-emerald-600">
-                  <span className="w-8 h-[1px] bg-emerald-600/30" />
-                  {cat}
+          return (
+            <div key={cat} className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-emerald-600">
+                    <span className="w-8 h-[1px] bg-emerald-600/30" />
+                    {cat}
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tight">
+                    {cat} Aptitude
+                  </h2>
                 </div>
-              )}
-              <div className={category ? "contents" : "space-y-4"}>
-                {topics
-                  .filter((t) => t.category === cat)
-                  .map((topic) => (
-                    <motion.div
-                      key={topic.id}
-                      whileHover={{ y: -4 }}
-                      className="group p-6 bg-white rounded-3xl border border-black/5 shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
-                          <Play size={20} className="text-gray-400 group-hover:text-emerald-500" />
-                        </div>
-                        <div className="flex gap-1">
-                          {[1, 2, 3].map((s) => (
-                            <Star key={s} size={12} className={s <= 2 ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
-                          ))}
-                        </div>
+                {catTopics.length > 6 && !category && (
+                  <Link 
+                    to={`/category/${cat}`}
+                    className="text-sm font-bold text-gray-400 hover:text-emerald-500 transition-colors"
+                  >
+                    View All {catTopics.length} Topics
+                  </Link>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(category ? catTopics : catTopics.slice(0, 6)).map((topic) => (
+                  <motion.div
+                    key={topic.id}
+                    whileHover={{ y: -4 }}
+                    className="group p-6 bg-white rounded-3xl border border-black/5 shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
+                        <Play size={20} className="text-gray-400 group-hover:text-emerald-500" />
                       </div>
-                      <h3 className="text-xl font-bold mb-2">{topic.name}</h3>
-                      <p className="text-sm text-gray-500 mb-6 line-clamp-2">{topic.description}</p>
-                      <div className="flex items-center justify-between">
-                        <Link
-                          to={`/learn/${topic.id}`}
-                          className="text-sm font-bold text-emerald-600 flex items-center gap-1 group-hover:gap-2 transition-all"
-                        >
-                          Learn Now <ArrowRight size={16} />
-                        </Link>
-                        <span className="text-[10px] font-mono bg-gray-100 px-2 py-1 rounded text-gray-500">12 LESSONS</span>
+                      <div className="flex gap-1">
+                        {[1, 2, 3].map((s) => (
+                          <Star key={s} size={12} className={s <= 2 ? "text-amber-400 fill-amber-400" : "text-gray-200"} />
+                        ))}
                       </div>
-                    </motion.div>
-                  ))}
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{topic.name}</h3>
+                    <p className="text-sm text-gray-500 mb-6 line-clamp-2">{topic.description}</p>
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={`/learn/${topic.id}`}
+                        className="text-sm font-bold text-emerald-600 flex items-center gap-1 group-hover:gap-2 transition-all"
+                      >
+                        Learn Now <ArrowRight size={16} />
+                      </Link>
+                      <span className="text-[10px] font-mono bg-gray-100 px-2 py-1 rounded text-gray-500">12 LESSONS</span>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </section>
 
       {/* Features Bento - Only show on main home */}
