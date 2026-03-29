@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import TopicLearning from "./pages/TopicLearning";
 import Practice from "./pages/Practice";
 import MockTest from "./pages/MockTest";
+import Introduction from "./pages/Introduction";
 import { User } from "./types";
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
             <div className="container mx-auto max-w-7xl">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/introduction" element={<Introduction />} />
                 <Route path="/category/:category" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard user={user} />} />
                 <Route path="/learn/:topicId" element={<TopicLearning />} />

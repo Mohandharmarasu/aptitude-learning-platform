@@ -5,6 +5,7 @@ import { cn } from "../lib/utils";
 export default function Sidebar() {
   const modules = [
     { name: "All Modules", path: "/", icon: LayoutGrid },
+    { name: "Arithmetic", path: "/category/Arithmetic", icon: Calculator },
     { name: "Quantitative", path: "/category/Quantitative", icon: Calculator },
     { name: "Logical", path: "/category/Logical", icon: Brain },
     { name: "Verbal", path: "/category/Verbal", icon: Languages },

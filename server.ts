@@ -51,11 +51,26 @@ const insertTopic = db.prepare("INSERT INTO topics (category, name, description)
 const checkTopic = db.prepare("SELECT id FROM topics WHERE name = ?");
 
 const topicsToSeed = [
-  ["Quantitative", "Percentages", "Understanding fractions of a whole."],
-  ["Quantitative", "Time and Work", "Calculating efficiency and duration."],
-  ["Quantitative", "Speed and Distance", "Relative motion and travel time."],
-  ["Quantitative", "Ratios", "Comparing quantities and proportions."],
-  ["Quantitative", "Profit and Loss", "Calculating gains and losses in trade."],
+  ["Arithmetic", "Percentage", "Understanding fractions of a whole."],
+  ["Arithmetic", "Profit and Loss", "Calculating gains and losses in trade."],
+  ["Arithmetic", "Simple Interest", "Calculating interest on principal amount."],
+  ["Arithmetic", "Compound Interest", "Interest on interest calculations."],
+  ["Arithmetic", "Partnership", "Business sharing and investment math."],
+  ["Arithmetic", "Ratio and Proportion", "Comparing quantities and proportions."],
+  ["Arithmetic", "Average", "Calculating the mean of a set of values."],
+  ["Arithmetic", "Problems on Ages", "Mathematical problems involving age calculations."],
+  ["Arithmetic", "Time and Work", "Calculating efficiency and duration."],
+  ["Arithmetic", "Pipes and Cistern", "Flow rates and tank filling problems."],
+  ["Arithmetic", "Time and Distance", "Relative motion and travel time."],
+  ["Arithmetic", "Problems on Trains", "Speed and distance specifically for trains."],
+  ["Arithmetic", "Boats and Streams", "Upstream and downstream calculations."],
+  ["Arithmetic", "Alligation or Mixture", "Mixing quantities of different values."],
+  ["Arithmetic", "Chain Rule", "Direct and indirect proportions."],
+  ["Arithmetic", "Decimal Fraction", "Operations with decimal numbers."],
+  ["Arithmetic", "Simplification", "Reducing complex expressions."],
+  ["Arithmetic", "Square Root and Cube Root", "Finding roots of numbers."],
+  ["Arithmetic", "Problems on Numbers", "Properties and types of numbers."],
+  ["Arithmetic", "Problems on H.C.F and L.C.M", "Highest Common Factor and Least Common Multiple."],
   ["Quantitative", "Permutation and Combination", "Arrangements and selections."],
   ["Quantitative", "Probability", "Likelihood of events occurring."],
   ["Quantitative", "Logarithm", "Inverse operations of exponentiation."],
@@ -63,7 +78,6 @@ const topicsToSeed = [
   ["Quantitative", "Area", "Measuring 2D surfaces."],
   ["Quantitative", "Volume and Surface Area", "Measuring 3D shapes."],
   ["Quantitative", "Height and Distance", "Trigonometric applications."],
-  ["Quantitative", "Numbers", "Properties and types of numbers."],
   ["Quantitative", "Races and Games", "Competitive math scenarios."],
   ["Quantitative", "Stocks and Shares", "Financial math and investments."],
   ["Quantitative", "True Discount", "Present value calculations."],
@@ -71,14 +85,49 @@ const topicsToSeed = [
   ["Quantitative", "Calendar", "Date and day calculations."],
   ["Quantitative", "Clock", "Time and angle calculations."],
   ["Quantitative", "Odd Man Out and Series", "Pattern recognition and logic."],
-  ["Logical", "Syllogisms", "Deductive reasoning from premises."],
-  ["Verbal", "Reading Comprehension", "Analyzing and interpreting text."]
+  ["Logical", "Logical Sequence of Words", "Arranging words in a meaningful order."],
+  ["Logical", "Blood Relation Test", "Deciphering family relationships."],
+  ["Logical", "Syllogism", "Deductive reasoning from premises."],
+  ["Logical", "Series Completion", "Identifying patterns in number or letter series."],
+  ["Logical", "Cause and Effect", "Analyzing relationships between events."],
+  ["Logical", "Dice", "Visualizing 3D cube rotations and faces."],
+  ["Logical", "Venn Diagrams", "Representing relationships between sets."],
+  ["Logical", "Cube and Cuboid", "Geometric reasoning with 3D shapes."],
+  ["Logical", "Analogy", "Finding similarities between pairs of concepts."],
+  ["Logical", "Seating Arrangement", "Logical positioning based on constraints."],
+  ["Logical", "Character Puzzles", "Solving puzzles involving symbols or characters."],
+  ["Logical", "Direction Sense Test", "Navigating based on cardinal directions."],
+  ["Logical", "Classification", "Identifying the odd one out in a group."],
+  ["Logical", "Data Sufficiency", "Determining if given data is enough to solve a problem."],
+  ["Logical", "Arithmetic Reasoning", "Mathematical problems requiring logical thinking."],
+  ["Verbal", "Spotting Errors", "Identifying grammatical errors in sentences."],
+  ["Verbal", "Synonyms", "Finding words with similar meanings."],
+  ["Verbal", "Antonyms", "Finding words with opposite meanings."],
+  ["Verbal", "Selecting Words", "Choosing the most appropriate word for a context."],
+  ["Verbal", "Spellings", "Identifying correctly or incorrectly spelled words."],
+  ["Verbal", "Sentence Formation", "Constructing meaningful sentences from fragments."],
+  ["Verbal", "Ordering of Words", "Arranging words to form a coherent sentence."],
+  ["Verbal", "Sentence Correction", "Correcting grammatically incorrect sentences."],
+  ["Verbal", "Sentence Improvement", "Enhancing sentence structure and clarity."],
+  ["Verbal", "Completing Statements", "Filling in blanks to complete a logical statement."],
+  ["Verbal", "Ordering of Sentences", "Arranging sentences in a logical sequence."],
+  ["Verbal", "Paragraph Formation", "Constructing a coherent paragraph from sentences."],
+  ["Verbal", "Cloze Test", "Filling in blanks within a passage."],
+  ["Verbal", "Comprehension", "Analyzing and interpreting written passages."],
+  ["Verbal", "One Word Substitutes", "Replacing a phrase with a single word."],
+  ["Verbal", "Idioms and Phrases", "Understanding figurative expressions."],
+  ["Verbal", "Change of Voice", "Converting between active and passive voice."],
+  ["Verbal", "Change of Speech", "Converting between direct and indirect speech."],
+  ["Verbal", "Verbal Analogies", "Finding relationships between pairs of words."]
 ];
 
 topicsToSeed.forEach(([category, name, description]) => {
   const existing = checkTopic.get(name);
   if (!existing) {
     insertTopic.run(category, name, description);
+  } else {
+    // Update category if it changed
+    db.prepare("UPDATE topics SET category = ? WHERE name = ?").run(category, name);
   }
 });
 
@@ -97,8 +146,8 @@ const seedTopicQuestions = (topicName: string, questions: any[]) => {
   }
 };
 
-// Percentages
-seedTopicQuestions("Percentages", [
+// Percentage
+seedTopicQuestions("Percentage", [
   { text: "What is 25% of 480?", options: ["100", "120", "140", "160"], correct: "120", explanation: "25% of 480 = (25/100) * 480 = 120", difficulty: "Easy" },
   { text: "A number is 60% of 250. Find the number.", options: ["120", "140", "150", "180"], correct: "150", explanation: "60% of 250 = (60/100) * 250 = 150", difficulty: "Easy" },
   { text: "The price of a shirt is ₹800. It is increased by 20%. What is the new price?", options: ["₹880", "₹920", "₹960", "₹1000"], correct: "₹960", explanation: "New Price = 800 + (20/100 * 800) = 800 + 160 = ₹960", difficulty: "Medium" },
@@ -113,8 +162,8 @@ seedTopicQuestions("Time and Work", [
   { text: "A is thrice as good a workman as B and therefore is able to finish a job in 60 days less than B. Working together, they can do it in:", options: ["20 days", "22.5 days", "25 days", "30 days"], correct: "22.5 days", explanation: "Ratio of times taken by A and B = 1:3. Difference = 2. 2 units = 60 days => 1 unit = 30 days. A takes 30 days, B takes 90 days. Together: (30*90)/(30+90) = 2700/120 = 22.5 days.", difficulty: "Hard" }
 ]);
 
-// Speed and Distance
-seedTopicQuestions("Speed and Distance", [
+// Time and Distance
+seedTopicQuestions("Time and Distance", [
   { text: "A person crosses a 600 m long street in 5 minutes. What is his speed in km per hour?", options: ["3.6", "7.2", "8.4", "10"], correct: "7.2", explanation: "Speed = 600 / (5 * 60) = 2 m/sec. In km/hr = 2 * (18/5) = 7.2 km/hr.", difficulty: "Easy" },
   { text: "If a person walks at 14 km/hr instead of 10 km/hr, he would have walked 20 km more. The actual distance travelled by him is:", options: ["50 km", "56 km", "70 km", "80 km"], correct: "50 km", explanation: "Let actual distance be x. x/10 = (x+20)/14 => 14x = 10x + 200 => 4x = 200 => x = 50 km.", difficulty: "Medium" }
 ]);
@@ -131,8 +180,8 @@ seedTopicQuestions("Reading Comprehension", [
   { text: "Passage: 'Climate change is no longer a distant threat but a present reality. Melting ice caps and rising sea levels are clear indicators.' Question: What is the main theme of the passage?", options: ["Melting ice caps", "Sustainable energy", "Urgency of climate change", "Extreme weather"], correct: "Urgency of climate change", explanation: "The passage emphasizes that climate change is a 'present reality'.", difficulty: "Medium" }
 ]);
 
-// Ratios
-seedTopicQuestions("Ratios", [
+// Ratio and Proportion
+seedTopicQuestions("Ratio and Proportion", [
   { text: "If A:B = 2:3 and B:C = 4:5, find A:B:C.", options: ["8:12:15", "2:3:5", "4:6:10", "8:10:15"], correct: "8:12:15", explanation: "A:B = 2:3 = 8:12; B:C = 4:5 = 12:15. So A:B:C = 8:12:15", difficulty: "Medium" },
   { text: "Two numbers are in the ratio 3:5. If 9 is subtracted from each, the new numbers are in the ratio 12:23. The smaller number is:", options: ["27", "33", "49", "55"], correct: "33", explanation: "Let numbers be 3x and 5x. (3x-9)/(5x-9) = 12/23. Solving gives x=11. Smaller number = 3*11 = 33.", difficulty: "Hard" }
 ]);
@@ -192,8 +241,8 @@ seedTopicQuestions("Height and Distance", [
   { text: "Two ships are sailing in the sea on the either side of a lighthouse. The angles of depression of the two ships as observed from the top of the lighthouse are 30° and 45° respectively. If the lighthouse is 100 m high, the distance between the two ships is:", options: ["173 m", "200 m", "273 m", "300 m"], correct: "273 m", explanation: "Distance 1 = 100/tan 30 = 100√3 = 173.2. Distance 2 = 100/tan 45 = 100. Total = 273.2 m.", difficulty: "Hard" }
 ]);
 
-// Numbers
-seedTopicQuestions("Numbers", [
+// Problems on Numbers
+seedTopicQuestions("Problems on Numbers", [
   { text: "The sum of the first 50 natural numbers is:", options: ["1225", "1275", "1325", "1375"], correct: "1275", explanation: "Sum = n(n+1)/2 = 50(51)/2 = 25 * 51 = 1275.", difficulty: "Easy" },
   { text: "A number when divided by 899 gives a remainder 63. If the same number is divided by 29, the remainder will be:", options: ["3", "4", "5", "10"], correct: "5", explanation: "Remainder = 63 mod 29 = 5.", difficulty: "Medium" },
   { text: "The difference between a two-digit number and the number obtained by interchanging the positions of its digits is 36. What is the difference between the two digits of that number?", options: ["3", "4", "9", "None of these"], correct: "4", explanation: "(10x+y) - (10y+x) = 36 => 9(x-y) = 36 => x-y = 4.", difficulty: "Medium" }
@@ -241,11 +290,268 @@ seedTopicQuestions("Clock", [
   { text: "At what time between 4 and 5 o'clock will the hands of a watch point in opposite directions?", options: ["45 min past 4", "40 min past 4", "54 6/11 min past 4", "None of these"], correct: "54 6/11 min past 4", explanation: "At 4 o'clock, hands are 20 min apart. For opposite, they need to be 30 min apart. Gain needed = 30 + 20 = 50 min. 55 min gained in 60 min. 50 min gained in (60/55)*50 = 54 6/11 min.", difficulty: "Hard" }
 ]);
 
-// Odd Man Out and Series
-seedTopicQuestions("Odd Man Out and Series", [
-  { text: "Find the odd man out: 3, 5, 7, 12, 17, 19", options: ["12", "17", "19", "7"], correct: "12", explanation: "All others are prime numbers.", difficulty: "Easy" },
-  { text: "Complete the series: 1, 4, 9, 16, 25, ?", options: ["30", "36", "48", "49"], correct: "36", explanation: "The series is squares of natural numbers: 1², 2², 3², 4², 5², 6² = 36.", difficulty: "Easy" },
-  { text: "Find the odd man out: 10, 25, 45, 54, 60, 75, 80", options: ["10", "45", "54", "75"], correct: "54", explanation: "All others are multiples of 5.", difficulty: "Easy" }
+// Simple Interest
+seedTopicQuestions("Simple Interest", [
+  { text: "Find the simple interest on ₹5000 at 10% per annum for 2 years.", options: ["₹500", "₹1000", "₹1500", "₹2000"], correct: "₹1000", explanation: "SI = (P * R * T) / 100 = (5000 * 10 * 2) / 100 = ₹1000.", difficulty: "Easy" },
+  { text: "At what rate percent per annum will a sum of money double in 8 years?", options: ["12.5%", "10%", "15%", "20%"], correct: "12.5%", explanation: "Let P = 100. SI = 100. T = 8. R = (100 * 100) / (100 * 8) = 12.5%.", difficulty: "Medium" },
+  { text: "A sum of money at simple interest amounts to ₹815 in 3 years and to ₹854 in 4 years. The sum is:", options: ["₹650", "₹690", "₹698", "₹700"], correct: "₹698", explanation: "SI for 1 year = 854 - 815 = 39. SI for 3 years = 39 * 3 = 117. Principal = 815 - 117 = ₹698.", difficulty: "Hard" }
+]);
+
+// Compound Interest
+seedTopicQuestions("Compound Interest", [
+  { text: "Find the compound interest on ₹10000 at 10% per annum for 2 years, compounded annually.", options: ["₹2000", "₹2100", "₹2200", "₹2300"], correct: "₹2100", explanation: "Amount = P(1 + R/100)^T = 10000(1.1)^2 = 12100. CI = 12100 - 10000 = ₹2100.", difficulty: "Medium" },
+  { text: "The difference between simple and compound interest on ₹1200 for one year at 10% per annum reckoned half-yearly is:", options: ["₹2.50", "₹3", "₹3.75", "₹None of these"], correct: "₹3", explanation: "SI = 120. CI half-yearly: R=5%, T=2. A = 1200(1.05)^2 = 1323. CI = 123. Difference = 123 - 120 = ₹3.", difficulty: "Hard" }
+]);
+
+// Partnership
+seedTopicQuestions("Partnership", [
+  { text: "A and B invest ₹3000 and ₹4000 in a business. If the total profit is ₹700, what is A's share?", options: ["₹300", "₹400", "₹350", "₹250"], correct: "₹300", explanation: "Ratio of investment = 3:4. A's share = (3/7) * 700 = ₹300.", difficulty: "Easy" },
+  { text: "A, B and C enter into a partnership. A invests 3 times as much as B and B invests two-third of what C invests. At the end of the year, the profit earned is ₹6600. What is the share of B?", options: ["₹1200", "₹1500", "₹1800", "₹2100"], correct: "₹1200", explanation: "Let C = 3x. B = 2x. A = 6x. Ratio = 6:2:3. B's share = (2/11) * 6600 = ₹1200.", difficulty: "Medium" }
+]);
+
+// Average
+seedTopicQuestions("Average", [
+  { text: "Find the average of first five prime numbers.", options: ["5.2", "5.4", "5.6", "5.8"], correct: "5.6", explanation: "First five primes: 2, 3, 5, 7, 11. Sum = 28. Average = 28/5 = 5.6.", difficulty: "Easy" },
+  { text: "The average of 7 consecutive numbers is 20. The largest of these numbers is:", options: ["20", "22", "23", "24"], correct: "23", explanation: "Let numbers be x-3, x-2, x-1, x, x+1, x+2, x+3. Sum = 7x. 7x/7 = 20 => x=20. Largest = 20+3 = 23.", difficulty: "Medium" }
+]);
+
+// Problems on Ages
+seedTopicQuestions("Problems on Ages", [
+  { text: "The ratio of ages of A and B is 4:5. If the sum of their ages is 81, find A's age.", options: ["36", "45", "40", "35"], correct: "36", explanation: "4x + 5x = 81 => 9x = 81 => x = 9. A's age = 4 * 9 = 36.", difficulty: "Easy" },
+  { text: "Father is aged three times more than his son Ronit. After 8 years, he would be two and a half times of Ronit's age. After further 8 years, how many times would he be of Ronit's age?", options: ["2 times", "2.5 times", "2.75 times", "3 times"], correct: "2 times", explanation: "Let Ronit's age be x. Father = 4x. (4x+8) = 2.5(x+8) => 1.5x = 12 => x=8. Ronit=8, Father=32. After 16 years: Ronit=24, Father=48. Ratio = 2.", difficulty: "Hard" }
+]);
+
+// Pipes and Cistern
+seedTopicQuestions("Pipes and Cistern", [
+  { text: "Pipe A can fill a tank in 10 hours and Pipe B can fill it in 15 hours. Together they can fill it in:", options: ["5 hours", "6 hours", "7 hours", "8 hours"], correct: "6 hours", explanation: "Together = (10 * 15) / (10 + 15) = 150 / 25 = 6 hours.", difficulty: "Medium" },
+  { text: "Two pipes A and B can fill a tank in 20 and 30 minutes respectively. If both the pipes are used together, then how long will it take to fill the tank?", options: ["12 min", "15 min", "25 min", "50 min"], correct: "12 min", explanation: "1/20 + 1/30 = 5/60 = 1/12. So 12 minutes.", difficulty: "Easy" }
+]);
+
+// Problems on Trains
+seedTopicQuestions("Problems on Trains", [
+  { text: "A train 150 m long passes a pole in 15 seconds. What is its speed in km/hr?", options: ["30", "36", "40", "45"], correct: "36", explanation: "Speed = 150 / 15 = 10 m/s = 10 * 18/5 = 36 km/hr.", difficulty: "Easy" },
+  { text: "Two trains 140 m and 160 m long run at the speed of 60 km/hr and 40 km/hr respectively in opposite directions on parallel tracks. The time which they take to cross each other, is:", options: ["9 sec", "9.6 sec", "10 sec", "10.8 sec"], correct: "10.8 sec", explanation: "Relative speed = 60 + 40 = 100 km/hr = 100 * 5/18 = 250/9 m/s. Total distance = 140 + 160 = 300 m. Time = 300 / (250/9) = 2700/250 = 10.8 sec.", difficulty: "Hard" }
+]);
+
+// Boats and Streams
+seedTopicQuestions("Boats and Streams", [
+  { text: "A boat goes 12 km/hr in still water. If the speed of the stream is 2 km/hr, find the speed downstream.", options: ["10 km/hr", "12 km/hr", "14 km/hr", "16 km/hr"], correct: "14 km/hr", explanation: "Downstream = Speed in still water + Speed of stream = 12 + 2 = 14 km/hr.", difficulty: "Easy" },
+  { text: "A boat can travel with a speed of 13 km/hr in still water. If the speed of the stream is 4 km/hr, find the time taken by the boat to go 68 km downstream.", options: ["2 hours", "3 hours", "4 hours", "5 hours"], correct: "4 hours", explanation: "Downstream speed = 13 + 4 = 17 km/hr. Time = 68 / 17 = 4 hours.", difficulty: "Medium" }
+]);
+
+// Alligation or Mixture
+seedTopicQuestions("Alligation or Mixture", [
+  { text: "In what ratio must rice at ₹9.30 per kg be mixed with rice at ₹10.80 per kg so that the mixture be worth ₹10 per kg?", options: ["8:7", "7:8", "5:6", "6:5"], correct: "8:7", explanation: "By rule of alligation: (10.80 - 10) : (10 - 9.30) = 0.80 : 0.70 = 8:7.", difficulty: "Medium" },
+  { text: "A mixture contains alcohol and water in the ratio 4 : 3. If 5 liters of water is added to the mixture, the ratio becomes 4: 5. Find the quantity of alcohol in the given mixture.", options: ["10 liters", "12 liters", "15 liters", "18 liters"], correct: "10 liters", explanation: "Let alcohol = 4x, water = 3x. 4x / (3x + 5) = 4/5 => 20x = 12x + 20 => 8x = 20 => x = 2.5. Alcohol = 4 * 2.5 = 10 liters.", difficulty: "Hard" }
+]);
+
+// Chain Rule
+seedTopicQuestions("Chain Rule", [
+  { text: "If 15 men can reap a field in 35 days, in how many days will 21 men reap it?", options: ["25", "20", "30", "28"], correct: "25", explanation: "M1D1 = M2D2 => 15 * 35 = 21 * D2 => D2 = (15 * 35) / 21 = 25 days.", difficulty: "Easy" },
+  { text: "If 7 spiders make 7 webs in 7 days, then 1 spider will make 1 web in how many days?", options: ["1", "7/2", "7", "49"], correct: "7", explanation: "M1D1/W1 = M2D2/W2 => (7 * 7) / 7 = (1 * D2) / 1 => D2 = 7 days.", difficulty: "Medium" }
+]);
+
+// Decimal Fraction
+seedTopicQuestions("Decimal Fraction", [
+  { text: "Evaluate: 0.006 * 0.02", options: ["0.12", "0.012", "0.0012", "0.00012"], correct: "0.00012", explanation: "6 * 2 = 12. Decimal places = 3 + 2 = 5. Result = 0.00012.", difficulty: "Easy" },
+  { text: "Which of the following is equal to 3.14 * 10^6?", options: ["314", "3140", "314000", "3140000"], correct: "3140000", explanation: "3.14 * 1000000 = 3140000.", difficulty: "Easy" }
+]);
+
+// Simplification
+seedTopicQuestions("Simplification", [
+  { text: "Simplify: 12.05 * 5.4 + 0.6", options: ["65.67", "65.07", "66.07", "65.6"], correct: "65.67", explanation: "12.05 * 5.4 = 65.07. 65.07 + 0.6 = 65.67.", difficulty: "Easy" },
+  { text: "Simplify: (3080 + 6160) / 28", options: ["320", "330", "340", "350"], correct: "330", explanation: "9240 / 28 = 330.", difficulty: "Medium" }
+]);
+
+// Square Root and Cube Root
+seedTopicQuestions("Square Root and Cube Root", [
+  { text: "Find the square root of 0.0009", options: ["0.3", "0.03", "0.003", "0.0003"], correct: "0.03", explanation: "sqrt(9) = 3. Decimal places = 4/2 = 2. Result = 0.03.", difficulty: "Easy" },
+  { text: "The cube root of 0.000216 is:", options: ["0.6", "0.06", "0.006", "None of these"], correct: "0.06", explanation: "cbrt(216) = 6. Decimal places = 6/3 = 2. Result = 0.06.", difficulty: "Medium" }
+]);
+
+// Problems on H.C.F and L.C.M
+seedTopicQuestions("Problems on H.C.F and L.C.M", [
+  { text: "Find the H.C.F of 2/3, 8/9, 64/81 and 10/27.", options: ["2/81", "2/3", "10/81", "None of these"], correct: "2/81", explanation: "HCF of fractions = HCF of numerators / LCM of denominators = HCF(2,8,64,10) / LCM(3,9,81,27) = 2 / 81.", difficulty: "Medium" },
+  { text: "The L.C.M. of two numbers is 48. The numbers are in the ratio 2 : 3. The sum of the numbers is:", options: ["28", "32", "40", "64"], correct: "40", explanation: "Let numbers be 2x and 3x. LCM = 6x = 48 => x=8. Numbers are 16 and 24. Sum = 40.", difficulty: "Medium" }
+]);
+
+// Logical Sequence of Words
+seedTopicQuestions("Logical Sequence of Words", [
+  { text: "Arrange the following in a logical order: 1. Birth, 2. Death, 3. Childhood, 4. Infancy, 5. Adolescence", options: ["4, 3, 5, 1, 2", "1, 4, 3, 5, 2", "1, 3, 4, 5, 2", "4, 1, 3, 5, 2"], correct: "1, 4, 3, 5, 2", explanation: "The logical sequence is: Birth -> Infancy -> Childhood -> Adolescence -> Death.", difficulty: "Easy" },
+  { text: "Arrange in logical order: 1. Table, 2. Tree, 3. Wood, 4. Seed, 5. Plant", options: ["4, 5, 2, 3, 1", "4, 5, 3, 2, 1", "1, 3, 2, 5, 4", "5, 4, 2, 3, 1"], correct: "4, 5, 2, 3, 1", explanation: "Sequence: Seed -> Plant -> Tree -> Wood -> Table.", difficulty: "Easy" }
+]);
+
+// Blood Relation Test
+seedTopicQuestions("Blood Relation Test", [
+  { text: "Pointing to a photograph, a man said, 'I have no brother or sister but that man's father is my father's son.' Whose photograph was it?", options: ["His own", "His son's", "His father's", "His nephew's"], correct: "His son's", explanation: "Since he has no brother or sister, 'my father's son' is himself. So, the man in the photo's father is himself. Thus, the photo is of his son.", difficulty: "Medium" },
+  { text: "If A is the brother of B; B is the sister of C; and C is the father of D, how is A related to D?", options: ["Brother", "Uncle", "Grandfather", "Father"], correct: "Uncle", explanation: "A is brother of B and B is sister of C, so A is brother of C. C is father of D, so A is the uncle of D.", difficulty: "Easy" }
+]);
+
+// Syllogism
+seedTopicQuestions("Syllogism", [
+  { text: "Statements: All mangoes are golden in colour. No golden-coloured things are cheap. Conclusions: I) All mangoes are cheap. II) Golden-coloured mangoes are not cheap.", options: ["Only I follows", "Only II follows", "Either I or II follows", "Neither I nor II follows"], correct: "Only II follows", explanation: "All mangoes are golden. No golden is cheap. So, no mango is cheap. Conclusion II follows.", difficulty: "Easy" },
+  { text: "Statements: Some actors are singers. All the singers are dancers. Conclusions: I) Some actors are dancers. II) No singer is actor.", options: ["Only I follows", "Only II follows", "Both I and II follow", "Neither I nor II follows"], correct: "Only I follows", explanation: "Some actors are singers + All singers are dancers => Some actors are dancers.", difficulty: "Medium" }
+]);
+
+// Series Completion
+seedTopicQuestions("Series Completion", [
+  { text: "Complete the series: 2, 6, 12, 20, 30, ?", options: ["40", "42", "44", "46"], correct: "42", explanation: "The differences are 4, 6, 8, 10... so the next difference is 12. 30 + 12 = 42.", difficulty: "Easy" },
+  { text: "Complete the series: SCD, TEF, UGH, ____, WKL", options: ["CMN", "UJI", "VIJ", "IJT"], correct: "VIJ", explanation: "The first letter follows S, T, U, V, W. The second and third letters follow CD, EF, GH, IJ, KL.", difficulty: "Easy" }
+]);
+
+// Cause and Effect
+seedTopicQuestions("Cause and Effect", [
+  { text: "Statement I: The price of petrol has risen sharply. Statement II: People are using more public transport. Which is the cause?", options: ["I is cause, II is effect", "II is cause, I is effect", "Both are independent causes", "Both are effects of some common cause"], correct: "I is cause, II is effect", explanation: "The rise in petrol prices (cause) leads people to use cheaper public transport (effect).", difficulty: "Medium" }
+]);
+
+// Dice
+seedTopicQuestions("Dice", [
+  { text: "Two positions of a dice are shown. Which number will be on the face opposite to 6? (Pos 1: 1, 3, 6; Pos 2: 1, 3, 5)", options: ["1", "3", "4", "5"], correct: "5", explanation: "Since 1 and 3 are common in both positions, the remaining faces 6 and 5 must be opposite to each other.", difficulty: "Medium" }
+]);
+
+// Venn Diagrams
+seedTopicQuestions("Venn Diagrams", [
+  { text: "Which diagram correctly represents the relationship between: Animals, Cows, Dogs?", options: ["Two separate circles inside a large circle", "Three separate circles", "Three intersecting circles", "One circle inside another inside another"], correct: "Two separate circles inside a large circle", explanation: "Cows and Dogs are both Animals, but they are distinct from each other.", difficulty: "Easy" }
+]);
+
+// Cube and Cuboid
+seedTopicQuestions("Cube and Cuboid", [
+  { text: "A cube is painted blue on all faces and then cut into 27 small cubes of equal size. How many small cubes will be painted on only one face?", options: ["6", "8", "12", "1"], correct: "6", explanation: "For a 3x3x3 cube, cubes with one face painted are at the center of each face. There are 6 faces, so 6 cubes.", difficulty: "Hard" }
+]);
+
+// Analogy
+seedTopicQuestions("Analogy", [
+  { text: "Moon : Satellite :: Earth : ?", options: ["Sun", "Planet", "Solar System", "Asteroid"], correct: "Planet", explanation: "Moon is a satellite, Earth is a planet.", difficulty: "Easy" },
+  { text: "Clock : Time :: Thermometer : ?", options: ["Heat", "Radiation", "Energy", "Temperature"], correct: "Temperature", explanation: "Clock measures time, thermometer measures temperature.", difficulty: "Easy" }
+]);
+
+// Seating Arrangement
+seedTopicQuestions("Seating Arrangement", [
+  { text: "A, B, C, D and E are sitting on a bench. A is next to B, C is next to D, D is not sitting with E who is on the left end of the bench. C is on the second position from the right. A is to the right of B and E. A and C are sitting together. In which position A is sitting?", options: ["Between B and D", "Between B and C", "Between E and D", "Between C and E"], correct: "Between B and C", explanation: "Arrangement from left: E, B, A, C, D. A is between B and C.", difficulty: "Hard" }
+]);
+
+// Character Puzzles
+seedTopicQuestions("Character Puzzles", [
+  { text: "Find the missing character: (Circle with 3, 5, 8, 13, 22, ?)", options: ["35", "39", "40", "44"], correct: "39", explanation: "3*2-1=5, 5*2-2=8, 8*2-3=13, 13*2-4=22, 22*2-5=39.", difficulty: "Medium" }
+]);
+
+// Direction Sense Test
+seedTopicQuestions("Direction Sense Test", [
+  { text: "A man walks 5 km toward south and then turns to the right. After walking 3 km he turns to the left and walks 5 km. Now in which direction is he from the starting place?", options: ["West", "South", "North-East", "South-West"], correct: "South-West", explanation: "He moves South, then West, then South again. He is in the South-West direction from the start.", difficulty: "Medium" }
+]);
+
+// Classification
+seedTopicQuestions("Classification", [
+  { text: "Choose the odd one out:", options: ["Apple", "Orange", "Potato", "Grape"], correct: "Potato", explanation: "Apple, Orange, and Grape are fruits; Potato is a vegetable.", difficulty: "Easy" },
+  { text: "Choose the odd one out:", options: ["35", "49", "63", "65"], correct: "65", explanation: "35, 49, and 63 are multiples of 7; 65 is not.", difficulty: "Easy" }
+]);
+
+// Data Sufficiency
+seedTopicQuestions("Data Sufficiency", [
+  { text: "Is X an even number? (1) X is a multiple of 2. (2) X is a multiple of 5.", options: ["(1) alone is sufficient", "(2) alone is sufficient", "Both together are needed", "Neither is sufficient"], correct: "(1) alone is sufficient", explanation: "Any multiple of 2 is even. So (1) alone answers the question.", difficulty: "Medium" }
+]);
+
+// Arithmetic Reasoning
+seedTopicQuestions("Arithmetic Reasoning", [
+  { text: "In a group of cows and hens, the number of legs are 14 more than twice the number of heads. The number of cows is:", options: ["5", "7", "10", "12"], correct: "7", explanation: "Let cows be C and hens be H. Legs = 4C + 2H. Heads = C + H. 4C + 2H = 2(C + H) + 14 => 4C + 2H = 2C + 2H + 14 => 2C = 14 => C = 7.", difficulty: "Medium" }
+]);
+
+// Spotting Errors
+seedTopicQuestions("Spotting Errors", [
+  { text: "Identify the part with error: 'Neither of the two (A) / candidates (B) / are fit (C) / for the post (D).'", options: ["A", "B", "C", "D"], correct: "C", explanation: "'Neither' is singular, so it should be 'is fit' instead of 'are fit'.", difficulty: "Medium" },
+  { text: "Identify the error: 'The news (A) / are (B) / very (C) / exciting (D).'", options: ["A", "B", "C", "D"], correct: "B", explanation: "'News' is an uncountable noun and takes a singular verb 'is'.", difficulty: "Easy" }
+]);
+
+// Synonyms
+seedTopicQuestions("Synonyms", [
+  { text: "What is the synonym of 'ABANDON'?", options: ["Keep", "Forsake", "Hold", "Cherish"], correct: "Forsake", explanation: "Abandon means to leave or give up; forsake is a synonym.", difficulty: "Easy" },
+  { text: "What is the synonym of 'DILIGENT'?", options: ["Lazy", "Hardworking", "Careless", "Slow"], correct: "Hardworking", explanation: "Diligent means showing care and effort; hardworking is a synonym.", difficulty: "Easy" }
+]);
+
+// Antonyms
+seedTopicQuestions("Antonyms", [
+  { text: "What is the antonym of 'ANCIENT'?", options: ["Old", "Modern", "Antique", "Historic"], correct: "Modern", explanation: "Ancient means very old; modern is the opposite.", difficulty: "Easy" },
+  { text: "What is the antonym of 'FRUGAL'?", options: ["Economical", "Extravagant", "Miserly", "Thrifty"], correct: "Extravagant", explanation: "Frugal means sparing or economical; extravagant is the opposite.", difficulty: "Medium" }
+]);
+
+// Selecting Words
+seedTopicQuestions("Selecting Words", [
+  { text: "The police ______ the crowd to maintain order.", options: ["dispersed", "scattered", "collected", "gathered"], correct: "dispersed", explanation: "Police 'disperse' a crowd to break it up.", difficulty: "Medium" }
+]);
+
+// Spellings
+seedTopicQuestions("Spellings", [
+  { text: "Find the correctly spelled word:", options: ["Accomodation", "Accommodation", "Acomodation", "Accomodationn"], correct: "Accommodation", explanation: "The correct spelling is 'Accommodation' (double c, double m).", difficulty: "Medium" }
+]);
+
+// Sentence Formation
+seedTopicQuestions("Sentence Formation", [
+  { text: "Rearrange: (1) was (2) the (3) boy (4) crying", options: ["2,3,1,4", "1,2,3,4", "4,3,2,1", "3,2,1,4"], correct: "2,3,1,4", explanation: "The boy was crying.", difficulty: "Easy" }
+]);
+
+// Ordering of Words
+seedTopicQuestions("Ordering of Words", [
+  { text: "Arrange: (P) of the (Q) the leader (R) people (S) was", options: ["QSP R", "QPS R", "PRQS", "RQPS"], correct: "QPS R", explanation: "The leader of the people was...", difficulty: "Medium" }
+]);
+
+// Sentence Correction
+seedTopicQuestions("Sentence Correction", [
+  { text: "Correct the sentence: 'He don't know the answer.'", options: ["He doesn't know", "He not know", "He don't knows", "No correction"], correct: "He doesn't know", explanation: "Third-person singular 'He' takes 'doesn't'.", difficulty: "Easy" }
+]);
+
+// Sentence Improvement
+seedTopicQuestions("Sentence Improvement", [
+  { text: "Improve the underlined part: 'The teacher *has given* us many homeworks.'", options: ["has given us much homework", "gave us many homeworks", "had given us many homework", "No improvement"], correct: "has given us much homework", explanation: "'Homework' is uncountable; use 'much' instead of 'many'.", difficulty: "Medium" }
+]);
+
+// Completing Statements
+seedTopicQuestions("Completing Statements", [
+  { text: "Complete: 'Hardly had he reached the station ______ the train started.'", options: ["when", "then", "than", "while"], correct: "when", explanation: "'Hardly' is followed by 'when'.", difficulty: "Medium" }
+]);
+
+// Ordering of Sentences
+seedTopicQuestions("Ordering of Sentences", [
+  { text: "Arrange: (S1) A man is known by the company he keeps. (P) If he associates with good people (Q) he will be respected (R) but if he keeps bad company (S) he will be looked down upon. (S6) Thus, choose friends wisely.", options: ["PQRS", "PRQS", "QPSR", "RQPS"], correct: "PQRS", explanation: "Logical flow: Condition 1 -> Result 1 -> Condition 2 -> Result 2.", difficulty: "Hard" }
+]);
+
+// Paragraph Formation
+seedTopicQuestions("Paragraph Formation", [
+  { text: "Arrange to form a paragraph: (A) He opened the door. (B) He heard a knock. (C) He went to the door. (D) He was reading a book.", options: ["DBCA", "ABCD", "DCBA", "BACD"], correct: "DBCA", explanation: "Sequence: Reading -> Hearing knock -> Going to door -> Opening door.", difficulty: "Medium" }
+]);
+
+// Cloze Test
+seedTopicQuestions("Cloze Test", [
+  { text: "Fill in the blank: 'The sun ______ in the east.'", options: ["rise", "rises", "rising", "rose"], correct: "rises", explanation: "Universal truth takes simple present tense.", difficulty: "Easy" }
+]);
+
+// Comprehension
+seedTopicQuestions("Comprehension", [
+  { text: "Passage: 'The tiger is a powerful predator.' Question: What is the tiger described as?", options: ["Herbivore", "Predator", "Scavenger", "Prey"], correct: "Predator", explanation: "Directly stated in the passage.", difficulty: "Easy" }
+]);
+
+// One Word Substitutes
+seedTopicQuestions("One Word Substitutes", [
+  { text: "A person who believes in God:", options: ["Atheist", "Theist", "Agnostic", "Pagan"], correct: "Theist", explanation: "Theist is one who believes in the existence of a god or gods.", difficulty: "Easy" }
+]);
+
+// Idioms and Phrases
+seedTopicQuestions("Idioms and Phrases", [
+  { text: "Meaning of 'To cry wolf':", options: ["To listen carefully", "To give a false alarm", "To be very happy", "To work hard"], correct: "To give a false alarm", explanation: "To cry wolf means to raise a false alarm.", difficulty: "Medium" }
+]);
+
+// Change of Voice
+seedTopicQuestions("Change of Voice", [
+  { text: "Change to Passive: 'He opens the door.'", options: ["The door is opened by him", "The door was opened by him", "The door is being opened by him", "The door has been opened by him"], correct: "The door is opened by him", explanation: "Simple present active -> Simple present passive (is + V3).", difficulty: "Medium" }
+]);
+
+// Change of Speech
+seedTopicQuestions("Change of Speech", [
+  { text: "Change to Indirect: 'He said, \"I am happy.\"'", options: ["He said that he was happy", "He said that he is happy", "He says that he was happy", "He said he is happy"], correct: "He said that he was happy", explanation: "Direct speech in present becomes past in indirect speech.", difficulty: "Medium" }
+]);
+
+// Verbal Analogies
+seedTopicQuestions("Verbal Analogies", [
+  { text: "Doctor : Hospital :: Teacher : ?", options: ["Office", "School", "Market", "Park"], correct: "School", explanation: "Doctor works in a hospital; teacher works in a school.", difficulty: "Easy" }
 ]);
 
 async function startServer() {

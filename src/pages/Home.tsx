@@ -14,7 +14,7 @@ export default function Home() {
       .then(data => setTopics(data));
   }, []);
 
-  const categories = category ? [category] : ["Quantitative", "Logical", "Verbal"];
+  const categories = category ? [category] : ["Arithmetic", "Quantitative", "Logical", "Verbal"];
 
   return (
     <div className="space-y-16 pb-20">
@@ -58,7 +58,7 @@ export default function Home() {
               className="flex flex-wrap gap-4"
             >
               <Link
-                to="/learn/1"
+                to="/introduction"
                 className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-2xl flex items-center gap-2 transition-all hover:scale-105"
               >
                 Start Learning <ArrowRight size={20} />

@@ -404,7 +404,7 @@ export default function TopicLearning() {
 
   }, [topic, step]);
 
-  // D3 Animation for Syllogisms
+  // D3 Animation for Syllogism
   useEffect(() => {
     const renderViz = (ref: React.RefObject<SVGSVGElement | null>, w: number, h: number) => {
       if (!ref.current || !topic) return;
@@ -417,8 +417,8 @@ export default function TopicLearning() {
       const centerX = width / 2;
       const centerY = height / 2;
 
-      // PERCENTAGES
-      if (topic.name === "Percentages") {
+      // PERCENTAGE
+      if (topic.name === "Percentage") {
         const radius = Math.min(width, height) / 2 - 40;
         const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
         const data = [
@@ -439,8 +439,8 @@ export default function TopicLearning() {
         g.append("text").attr("text-anchor", "middle").attr("dy", ".35em").attr("font-size", "24px").attr("font-weight", "bold").text(step === 0 ? "0%" : "25%");
       }
 
-      // SPEED AND DISTANCE
-      if (topic.name === "Speed and Distance") {
+      // TIME AND DISTANCE
+      if (topic.name === "Time and Distance") {
         const roadY = centerY + 50;
         const roadStart = 50;
         const roadEnd = width - 50;
@@ -456,8 +456,8 @@ export default function TopicLearning() {
         }
       }
 
-      // RATIOS
-      if (topic.name === "Ratios") {
+      // RATIO AND PROPORTION
+      if (topic.name === "Ratio and Proportion") {
         const ratioA = step === 0 ? 1 : step === 1 ? 2 : 3;
         const ratioB = step === 0 ? 1 : step === 1 ? 3 : 5;
         const boxSize = 40;
@@ -498,14 +498,219 @@ export default function TopicLearning() {
         path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(2000).attr("stroke-dashoffset", 0);
       }
 
-      // SYLLOGISMS
-      if (topic.name === "Syllogisms") {
+      // SYLLOGISM
+      if (topic.name === "Syllogism") {
         if (step === 0) {
           svg.append("circle").attr("cx", centerX - 70).attr("cy", centerY).attr("r", 60).attr("fill", "#10B981").attr("fill-opacity", 0.2).attr("stroke", "#10B981").attr("stroke-width", 3);
           svg.append("circle").attr("cx", centerX + 70).attr("cy", centerY).attr("r", 60).attr("fill", "#3B82F6").attr("fill-opacity", 0.2).attr("stroke", "#3B82F6").attr("stroke-width", 3);
         } else if (step === 1) {
           svg.append("circle").attr("cx", centerX).attr("cy", centerY).attr("r", 100).attr("fill", "#3B82F6").attr("fill-opacity", 0.1).attr("stroke", "#3B82F6").attr("stroke-width", 3);
           svg.append("circle").attr("cx", centerX).attr("cy", centerY).attr("r", 0).attr("fill", "#10B981").attr("fill-opacity", 0.3).attr("stroke", "#10B981").attr("stroke-width", 3).transition().duration(1000).attr("r", 50);
+        }
+      }
+
+      // LOGICAL SEQUENCE OF WORDS
+      if (topic.name === "Logical Sequence of Words") {
+        const words = ["Seed", "Plant", "Tree", "Wood", "Table"];
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        words.forEach((word, i) => {
+          g.append("text")
+            .attr("x", (i - 2) * 80)
+            .attr("y", 0)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "14px")
+            .attr("font-weight", "bold")
+            .attr("fill", "#10B981")
+            .text(word)
+            .attr("opacity", 0)
+            .transition()
+            .delay(i * 500)
+            .attr("opacity", 1);
+          
+          if (i < words.length - 1) {
+            g.append("line")
+              .attr("x1", (i - 2) * 80 + 20)
+              .attr("y1", -5)
+              .attr("x2", (i - 1) * 80 - 20)
+              .attr("y2", -5)
+              .attr("stroke", "#333")
+              .attr("stroke-width", 2)
+              .attr("marker-end", "url(#arrowhead)")
+              .attr("opacity", 0)
+              .transition()
+              .delay(i * 500 + 250)
+              .attr("opacity", 1);
+          }
+        });
+      }
+
+      // BLOOD RELATION TEST
+      if (topic.name === "Blood Relation Test") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        // Family Tree
+        g.append("circle").attr("cx", 0).attr("cy", -60).attr("r", 25).attr("fill", "#3B82F6").attr("fill-opacity", 0.2).attr("stroke", "#3B82F6");
+        g.append("text").attr("x", 0).attr("y", -55).attr("text-anchor", "middle").attr("font-size", "10px").text("Father");
+        
+        g.append("line").attr("x1", 0).attr("y1", -35).attr("x2", 0).attr("y2", 15).attr("stroke", "#333");
+        
+        g.append("circle").attr("cx", 0).attr("cy", 40).attr("r", 25).attr("fill", "#10B981").attr("fill-opacity", 0.2).attr("stroke", "#10B981");
+        g.append("text").attr("x", 0).attr("y", 45).attr("text-anchor", "middle").attr("font-size", "10px").text("Son");
+      }
+
+      // SERIES COMPLETION
+      if (topic.name === "Series Completion") {
+        const series = [2, 4, 8, 16, 32, "?"];
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        series.forEach((num, i) => {
+          g.append("text")
+            .attr("x", (i - 2.5) * 60)
+            .attr("y", 0)
+            .attr("text-anchor", "middle")
+            .attr("font-size", "24px")
+            .attr("font-weight", "bold")
+            .attr("fill", i === 5 ? "#EF4444" : "#10B981")
+            .text(num)
+            .attr("opacity", 0)
+            .transition()
+            .delay(i * 400)
+            .attr("opacity", 1);
+        });
+      }
+
+      // CAUSE AND EFFECT
+      if (topic.name === "Cause and Effect") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("rect").attr("x", -150).attr("y", -30).attr("width", 100).attr("height", 60).attr("rx", 8).attr("fill", "#3B82F6").attr("fill-opacity", 0.2).attr("stroke", "#3B82F6");
+        g.append("text").attr("x", -100).attr("y", 5).attr("text-anchor", "middle").text("Cause");
+        
+        g.append("line").attr("x1", -50).attr("y1", 0).attr("x2", 50).attr("y2", 0).attr("stroke", "#333").attr("stroke-width", 3).attr("marker-end", "url(#arrowhead)");
+        
+        g.append("rect").attr("x", 50).attr("y", -30).attr("width", 100).attr("height", 60).attr("rx", 8).attr("fill", "#10B981").attr("fill-opacity", 0.2).attr("stroke", "#10B981");
+        g.append("text").attr("x", 100).attr("y", 5).attr("text-anchor", "middle").text("Effect");
+      }
+
+      // DICE
+      if (topic.name === "Dice") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        // 3D-ish Cube
+        g.append("rect").attr("x", -40).attr("y", -40).attr("width", 80).attr("height", 80).attr("fill", "white").attr("stroke", "#333").attr("stroke-width", 2);
+        g.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 5).attr("fill", "#000"); // 1 dot
+        
+        const top = g.append("path").attr("d", "M -40 -40 L -10 -70 L 70 -70 L 40 -40 Z").attr("fill", "#F3F4F6").attr("stroke", "#333");
+        const side = g.append("path").attr("d", "M 40 -40 L 70 -70 L 70 10 L 40 40 Z").attr("fill", "#E5E7EB").attr("stroke", "#333");
+        
+        if (step > 0) {
+          g.transition().duration(1000).attr("transform", `translate(${centerX}, ${centerY}) rotate(90)`);
+        }
+      }
+
+      // VENN DIAGRAMS
+      if (topic.name === "Venn Diagrams") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("circle").attr("cx", -40).attr("cy", 0).attr("r", 60).attr("fill", "#10B981").attr("fill-opacity", 0.2).attr("stroke", "#10B981");
+        g.append("circle").attr("cx", 40).attr("cy", 0).attr("r", 60).attr("fill", "#3B82F6").attr("fill-opacity", 0.2).attr("stroke", "#3B82F6");
+        g.append("text").attr("x", 0).attr("y", 0).attr("text-anchor", "middle").attr("font-weight", "bold").text("Intersection");
+      }
+
+      // CUBE AND CUBOID
+      if (topic.name === "Cube and Cuboid") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        // Grid of cubes
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            g.append("rect")
+              .attr("x", (i - 1.5) * 30)
+              .attr("y", (j - 1.5) * 30)
+              .attr("width", 28)
+              .attr("height", 28)
+              .attr("fill", "#10B981")
+              .attr("fill-opacity", 0.3)
+              .attr("stroke", "#059669");
+          }
+        }
+      }
+
+      // ANALOGY
+      if (topic.name === "Analogy") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("x", -100).attr("y", 0).attr("text-anchor", "middle").attr("font-size", "24px").text("A : B");
+        g.append("text").attr("x", 0).attr("y", 0).attr("text-anchor", "middle").attr("font-size", "24px").text("::");
+        g.append("text").attr("x", 100).attr("y", 0).attr("text-anchor", "middle").attr("font-size", "24px").text("C : ?");
+        if (step > 0) {
+          g.append("text").attr("x", 100).attr("y", 40).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").text("Find D");
+        }
+      }
+
+      // SEATING ARRANGEMENT
+      if (topic.name === "Seating Arrangement") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("circle").attr("r", 80).attr("fill", "none").attr("stroke", "#333").attr("stroke-dasharray", "4,4");
+        const seats = ["A", "B", "C", "D", "E", "F"];
+        seats.forEach((s, i) => {
+          const angle = (i * 60) * Math.PI / 180;
+          g.append("circle").attr("cx", Math.sin(angle) * 80).attr("cy", -Math.cos(angle) * 80).attr("r", 15).attr("fill", "#10B981").attr("fill-opacity", 0.2).attr("stroke", "#10B981");
+          g.append("text").attr("x", Math.sin(angle) * 80).attr("y", -Math.cos(angle) * 80 + 5).attr("text-anchor", "middle").attr("font-size", "12px").text(s);
+        });
+      }
+
+      // CHARACTER PUZZLES
+      if (topic.name === "Character Puzzles") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("rect").attr("x", -60).attr("y", -60).attr("width", 120).attr("height", 120).attr("fill", "none").attr("stroke", "#333");
+        g.append("line").attr("x1", 0).attr("y1", -60).attr("x2", 0).attr("y2", 60).attr("stroke", "#333");
+        g.append("line").attr("x1", -60).attr("y1", 0).attr("x2", 60).attr("y2", 0).attr("stroke", "#333");
+        const nums = [4, 9, 16, "?"];
+        nums.forEach((n, i) => {
+          const x = (i % 2 === 0 ? -30 : 30);
+          const y = (i < 2 ? -30 : 30);
+          g.append("text").attr("x", x).attr("y", y + 10).attr("text-anchor", "middle").attr("font-size", "24px").attr("font-weight", "bold").attr("fill", i === 3 ? "#EF4444" : "#10B981").text(n);
+        });
+      }
+
+      // DIRECTION SENSE TEST
+      if (topic.name === "Direction Sense Test") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        // Compass
+        g.append("line").attr("x1", -50).attr("y1", 0).attr("x2", 50).attr("y2", 0).attr("stroke", "#333");
+        g.append("line").attr("x1", 0).attr("y1", -50).attr("x2", 0).attr("y2", 50).attr("stroke", "#333");
+        g.append("text").attr("x", 0).attr("y", -60).attr("text-anchor", "middle").text("N");
+        g.append("text").attr("x", 0).attr("y", 70).attr("text-anchor", "middle").text("S");
+        g.append("text").attr("x", 65).attr("y", 5).attr("text-anchor", "middle").text("E");
+        g.append("text").attr("x", -65).attr("y", 5).attr("text-anchor", "middle").text("W");
+        
+        if (step > 0) {
+          const path = g.append("path").attr("d", "M 0 0 L 0 -40 L 40 -40").attr("fill", "none").attr("stroke", "#10B981").attr("stroke-width", 3);
+          const totalLength = (path.node() as any).getTotalLength();
+          path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(1000).attr("stroke-dashoffset", 0);
+        }
+      }
+
+      // CLASSIFICATION
+      if (topic.name === "Classification") {
+        const items = ["Apple", "Banana", "Orange", "Carrot"];
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        items.forEach((item, i) => {
+          g.append("rect").attr("x", (i - 2) * 80).attr("y", -20).attr("width", 70).attr("height", 40).attr("rx", 8).attr("fill", i === 3 ? "#EF4444" : "#10B981").attr("fill-opacity", 0.2).attr("stroke", i === 3 ? "#EF4444" : "#10B981");
+          g.append("text").attr("x", (i - 2) * 80 + 35).attr("y", 5).attr("text-anchor", "middle").attr("font-size", "12px").text(item);
+        });
+      }
+
+      // DATA SUFFICIENCY
+      if (topic.name === "Data Sufficiency") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("y", -40).attr("text-anchor", "middle").attr("font-weight", "bold").text("Question?");
+        g.append("rect").attr("x", -120).attr("y", -10).attr("width", 100).attr("height", 40).attr("rx", 4).attr("fill", "#E5E7EB");
+        g.append("text").attr("x", -70).attr("y", 15).attr("text-anchor", "middle").text("Stat 1");
+        g.append("rect").attr("x", 20).attr("y", -10).attr("width", 100).attr("height", 40).attr("rx", 4).attr("fill", "#E5E7EB");
+        g.append("text").attr("x", 70).attr("y", 15).attr("text-anchor", "middle").text("Stat 2");
+      }
+
+      // ARITHMETIC REASONING
+      if (topic.name === "Arithmetic Reasoning") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").attr("font-size", "32px").attr("font-weight", "bold").attr("fill", "#10B981").text("Logic + Math");
+        if (step > 0) {
+          g.append("text").attr("y", 50).attr("text-anchor", "middle").text("Word Problems");
         }
       }
 
@@ -647,8 +852,8 @@ export default function TopicLearning() {
         g.append("text").attr("x", 90).attr("y", -10).attr("font-size", "12px").text("θ");
       }
 
-      // NUMBERS
-      if (topic.name === "Numbers") {
+      // PROBLEMS ON NUMBERS
+      if (topic.name === "Problems on Numbers") {
         const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
         const numbers = [2, 3, 5, 7, 11, 13, 17];
         g.selectAll("text")
@@ -666,6 +871,227 @@ export default function TopicLearning() {
           .transition()
           .delay((d, i) => i * 200)
           .attr("opacity", 1);
+      }
+
+      // SIMPLE INTEREST
+      if (topic.name === "Simple Interest") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const principal = 100;
+        const interest = step === 0 ? 0 : step === 1 ? 20 : 40;
+        
+        g.append("rect").attr("x", -50).attr("y", 50 - principal).attr("width", 40).attr("height", principal).attr("fill", "#E5E7EB").attr("rx", 4);
+        g.append("text").attr("x", -30).attr("y", 70).attr("text-anchor", "middle").attr("font-size", "10px").text("Principal");
+        
+        const intBar = g.append("rect").attr("x", 10).attr("y", 50).attr("width", 40).attr("height", 0).attr("fill", "#10B981").attr("rx", 4);
+        intBar.transition().duration(1000).attr("y", 50 - interest).attr("height", interest);
+        g.append("text").attr("x", 30).attr("y", 70).attr("text-anchor", "middle").attr("font-size", "10px").text("Interest");
+      }
+
+      // COMPOUND INTEREST
+      if (topic.name === "Compound Interest") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const data = step === 0 ? [100] : step === 1 ? [100, 110] : [100, 110, 121];
+        
+        g.selectAll("rect")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("x", (d, i) => (i - 1) * 60)
+          .attr("y", d => 50 - d)
+          .attr("width", 40)
+          .attr("height", d => d)
+          .attr("fill", (d, i) => i === 0 ? "#E5E7EB" : "#10B981")
+          .attr("rx", 4)
+          .attr("opacity", 0)
+          .transition()
+          .delay((d, i) => i * 300)
+          .attr("opacity", 1);
+        
+        g.selectAll(".label")
+          .data(data)
+          .enter()
+          .append("text")
+          .attr("x", (d, i) => (i - 1) * 60 + 20)
+          .attr("y", 70)
+          .attr("text-anchor", "middle")
+          .attr("font-size", "10px")
+          .text((d, i) => `Yr ${i}`);
+      }
+
+      // PARTNERSHIP
+      if (topic.name === "Partnership") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const shares = [40, 60];
+        const pie = d3.pie<any>().sort(null);
+        const arc = d3.arc<any>().innerRadius(0).outerRadius(80);
+        
+        g.selectAll("path")
+          .data(pie(shares))
+          .enter()
+          .append("path")
+          .attr("fill", (d, i) => i === 0 ? "#10B981" : "#3B82F6")
+          .attr("d", arc)
+          .attr("opacity", 0)
+          .transition()
+          .duration(1000)
+          .attr("opacity", 1);
+        
+        g.append("text").attr("x", -100).attr("y", -100).attr("fill", "#10B981").attr("font-weight", "bold").text("Partner A");
+        g.append("text").attr("x", 40).attr("y", -100).attr("fill", "#3B82F6").attr("font-weight", "bold").text("Partner B");
+      }
+
+      // AVERAGE
+      if (topic.name === "Average") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const values = [30, 70, 50, 90, 10];
+        const avg = d3.mean(values) || 0;
+        
+        g.selectAll("rect")
+          .data(values)
+          .enter()
+          .append("rect")
+          .attr("x", (d, i) => (i - 2) * 50)
+          .attr("y", d => 50 - d)
+          .attr("width", 30)
+          .attr("height", d => d)
+          .attr("fill", "#E5E7EB")
+          .attr("rx", 4);
+        
+        if (step > 0) {
+          g.append("line")
+            .attr("x1", -120)
+            .attr("y1", 50 - avg)
+            .attr("x2", 120)
+            .attr("y2", 50 - avg)
+            .attr("stroke", "#10B981")
+            .attr("stroke-width", 3)
+            .attr("stroke-dasharray", "4,4")
+            .attr("opacity", 0)
+            .transition()
+            .duration(1000)
+            .attr("opacity", 1);
+          
+          g.append("text")
+            .attr("x", 0)
+            .attr("y", 50 - avg - 10)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#10B981")
+            .attr("font-weight", "bold")
+            .text(`Average: ${avg}`);
+        }
+      }
+
+      // PROBLEMS ON AGES
+      if (topic.name === "Problems on Ages") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const ageA = 20 + (step * 5);
+        const ageB = 30 + (step * 5);
+        
+        g.append("circle").attr("cx", -60).attr("cy", 0).attr("r", ageA).attr("fill", "#10B981").attr("fill-opacity", 0.3);
+        g.append("text").attr("x", -60).attr("y", 5).attr("text-anchor", "middle").text(`A: ${ageA}`);
+        
+        g.append("circle").attr("cx", 60).attr("cy", 0).attr("r", ageB).attr("fill", "#3B82F6").attr("fill-opacity", 0.3);
+        g.append("text").attr("x", 60).attr("y", 5).attr("text-anchor", "middle").text(`B: ${ageB}`);
+        
+        g.append("text").attr("x", 0).attr("y", 80).attr("text-anchor", "middle").attr("font-weight", "bold").text(step === 0 ? "Present Ages" : `After ${step * 5} Years`);
+      }
+
+      // PIPES AND CISTERN
+      if (topic.name === "Pipes and Cistern") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("rect").attr("x", -60).attr("y", -60).attr("width", 120).attr("height", 120).attr("fill", "none").attr("stroke", "#333").attr("stroke-width", 2);
+        
+        const water = g.append("rect").attr("x", -60).attr("y", 60).attr("width", 120).attr("height", 0).attr("fill", "#3B82F6").attr("fill-opacity", 0.5);
+        
+        if (step > 0) {
+          water.transition().duration(2000).attr("y", 60 - (step * 40)).attr("height", step * 40);
+          g.append("path").attr("d", "M -80 -40 L -60 -40").attr("stroke", "#3B82F6").attr("stroke-width", 8).attr("stroke-linecap", "round");
+        }
+      }
+
+      // PROBLEMS ON TRAINS
+      if (topic.name === "Problems on Trains") {
+        const g = svg.append("g").attr("transform", `translate(0, ${centerY})`);
+        g.append("line").attr("x1", 0).attr("y1", 20).attr("x2", width).attr("y2", 20).attr("stroke", "#333").attr("stroke-width", 2);
+        
+        const train = g.append("g").attr("transform", `translate(-100, 0)`);
+        train.append("rect").attr("width", 100).attr("height", 20).attr("fill", "#10B981").attr("rx", 4);
+        train.append("rect").attr("x", 80).attr("y", 5).attr("width", 15).attr("height", 10).attr("fill", "white").attr("opacity", 0.5);
+        
+        if (step > 0) {
+          train.transition().duration(2000).ease(d3.easeLinear).attr("transform", `translate(${width}, 0)`);
+        }
+        
+        g.append("rect").attr("x", centerX).attr("y", -20).attr("width", 10).attr("height", 40).attr("fill", "#333"); // Pole
+      }
+
+      // BOATS AND STREAMS
+      if (topic.name === "Boats and Streams") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const stream = g.append("rect").attr("x", -width/2).attr("y", 0).attr("width", width).attr("height", 40).attr("fill", "#3B82F6").attr("fill-opacity", 0.2);
+        
+        const boat = g.append("path").attr("d", "M -20 0 L 20 0 L 15 10 L -15 10 Z").attr("fill", "#10B981").attr("transform", "translate(0, -10)");
+        
+        if (step === 1) { // Downstream
+          boat.transition().duration(1000).attr("transform", "translate(100, -10)");
+          stream.transition().duration(1000).attr("fill-opacity", 0.4);
+        } else if (step === 2) { // Upstream
+          boat.transition().duration(2000).attr("transform", "translate(-100, -10)");
+        }
+      }
+
+      // ALLIGATION OR MIXTURE
+      if (topic.name === "Alligation or Mixture") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("circle").attr("cx", -80).attr("cy", -40).attr("r", 30).attr("fill", "#10B981").attr("fill-opacity", 0.5);
+        g.append("text").attr("x", -80).attr("y", -80).attr("text-anchor", "middle").text("Type A");
+        
+        g.append("circle").attr("cx", 80).attr("cy", -40).attr("r", 30).attr("fill", "#3B82F6").attr("fill-opacity", 0.5);
+        g.append("text").attr("x", 80).attr("y", -80).attr("text-anchor", "middle").text("Type B");
+        
+        if (step > 0) {
+          g.append("circle").attr("cx", 0).attr("cy", 60).attr("r", 40).attr("fill", "#8B5CF6").attr("fill-opacity", 0.5);
+          g.append("text").attr("x", 0).attr("y", 120).attr("text-anchor", "middle").attr("font-weight", "bold").text("Mixture");
+        }
+      }
+
+      // CHAIN RULE
+      if (topic.name === "Chain Rule") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").attr("font-size", "24px").attr("font-weight", "bold").text("M₁D₁H₁ / W₁ = M₂D₂H₂ / W₂");
+        if (step > 0) {
+          g.append("text").attr("y", 50).attr("text-anchor", "middle").attr("fill", "#10B981").text("Direct & Indirect Proportions");
+        }
+      }
+
+      // DECIMAL FRACTION
+      if (topic.name === "Decimal Fraction") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").attr("font-size", "40px").attr("font-weight", "bold").attr("fill", "#10B981").text("0.25 = 25/100 = 1/4");
+      }
+
+      // SIMPLIFICATION
+      if (topic.name === "Simplification") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").attr("font-size", "32px").attr("font-weight", "bold").text("B O D M A S");
+        if (step > 0) {
+          g.append("text").attr("y", 50).attr("text-anchor", "middle").attr("fill", "#10B981").text("Brackets, Orders, Division...");
+        }
+      }
+
+      // SQUARE ROOT AND CUBE ROOT
+      if (topic.name === "Square Root and Cube Root") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").attr("font-size", "40px").attr("font-weight", "bold").attr("fill", "#10B981").text("√64 = 8, ∛64 = 4");
+      }
+
+      // PROBLEMS ON H.C.F AND L.C.M
+      if (topic.name === "Problems on H.C.F and L.C.M") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("circle").attr("cx", -40).attr("cy", 0).attr("r", 60).attr("fill", "#10B981").attr("fill-opacity", 0.2).attr("stroke", "#10B981");
+        g.append("circle").attr("cx", 40).attr("cy", 0).attr("r", 60).attr("fill", "#3B82F6").attr("fill-opacity", 0.2).attr("stroke", "#3B82F6");
+        g.append("text").attr("x", 0).attr("y", 0).attr("text-anchor", "middle").attr("font-weight", "bold").text("HCF");
+        g.append("text").attr("x", 0).attr("y", 80).attr("text-anchor", "middle").text("LCM = Product / HCF");
       }
 
       // TRUE DISCOUNT & BANKER'S DISCOUNT
@@ -701,6 +1127,105 @@ export default function TopicLearning() {
           g.append("text").attr("x", 150).attr("y", 50).attr("text-anchor", "middle").attr("fill", "#EF4444").attr("font-weight", "bold").text("Odd one!").attr("opacity", 0).transition().delay(2000).attr("opacity", 1);
         }
       }
+
+      // SPOTTING ERRORS
+      if (topic.name === "Spotting Errors") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").attr("font-size", "20px").text("He go to school every day.");
+        if (step > 0) {
+          g.append("line").attr("x1", -85).attr("y1", 5).attr("x2", -65).attr("y2", 5).attr("stroke", "#EF4444").attr("stroke-width", 2);
+          g.append("text").attr("y", 40).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").text("Correction: He goes...");
+        }
+      }
+
+      // SYNONYMS / ANTONYMS
+      if (topic.name === "Synonyms" || topic.name === "Antonyms") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        const isSynonym = topic.name === "Synonyms";
+        g.append("text").attr("x", -80).attr("text-anchor", "middle").attr("font-size", "24px").text("Large");
+        g.append("text").attr("x", 0).attr("text-anchor", "middle").attr("font-size", "24px").text(isSynonym ? "=" : "≠");
+        g.append("text").attr("x", 80).attr("text-anchor", "middle").attr("font-size", "24px").text(isSynonym ? "Big" : "Small");
+      }
+
+      // SPELLINGS
+      if (topic.name === "Spellings") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("y", -20).attr("text-anchor", "middle").attr("fill", "#EF4444").text("Accomodation");
+        if (step > 0) {
+          g.append("text").attr("y", 20).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").text("Accommodation");
+        }
+      }
+
+      // SENTENCE FORMATION / ORDERING OF WORDS
+      if (topic.name === "Sentence Formation" || topic.name === "Ordering of Words") {
+        const words = ["The", "cat", "sat", "on", "mat"];
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        words.forEach((w, i) => {
+          g.append("text")
+            .attr("x", (i - 2) * 60)
+            .attr("y", step === 0 ? (i % 2 === 0 ? -20 : 20) : 0)
+            .attr("text-anchor", "middle")
+            .text(w)
+            .transition().duration(1000).attr("x", (i - 2) * 60).attr("y", 0);
+        });
+      }
+
+      // CLOZE TEST
+      if (topic.name === "Cloze Test") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("text-anchor", "middle").text("The sun _______ in the east.");
+        if (step > 0) {
+          g.append("text").attr("x", -15).attr("y", 0).attr("fill", "#10B981").attr("font-weight", "bold").text("rises");
+        }
+      }
+
+      // COMPREHENSION
+      if (topic.name === "Comprehension") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("rect").attr("x", -60).attr("y", -40).attr("width", 120).attr("height", 80).attr("fill", "none").attr("stroke", "#333").attr("stroke-width", 2);
+        g.append("line").attr("x1", -50).attr("y1", -20).attr("x2", 50).attr("y2", -20).attr("stroke", "#E5E7EB");
+        g.append("line").attr("x1", -50).attr("y1", 0).attr("x2", 50).attr("y2", 0).attr("stroke", "#E5E7EB");
+        g.append("line").attr("x1", -50).attr("y1", 20).attr("x2", 20).attr("y2", 20).attr("stroke", "#E5E7EB");
+        g.append("circle").attr("cx", 40).attr("cy", 20).attr("r", 15).attr("fill", "none").attr("stroke", "#10B981").attr("stroke-width", 2);
+        g.append("line").attr("x1", 50).attr("y1", 30).attr("x2", 65).attr("y2", 45).attr("stroke", "#10B981").attr("stroke-width", 3);
+      }
+
+      // ONE WORD SUBSTITUTES
+      if (topic.name === "One Word Substitutes") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("y", -20).attr("text-anchor", "middle").attr("font-size", "14px").text("One who believes in God");
+        if (step > 0) {
+          g.append("text").attr("y", 20).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").attr("font-size", "24px").text("Theist");
+        }
+      }
+
+      // IDIOMS AND PHRASES
+      if (topic.name === "Idioms and Phrases") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("y", -20).attr("text-anchor", "middle").text("Piece of cake");
+        if (step > 0) {
+          g.append("text").attr("y", 20).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").text("Very easy task");
+        }
+      }
+
+      // CHANGE OF VOICE / SPEECH
+      if (topic.name === "Change of Voice" || topic.name === "Change of Speech") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("y", -40).attr("text-anchor", "middle").text(topic.name === "Change of Voice" ? "Active Voice" : "Direct Speech");
+        g.append("line").attr("x1", 0).attr("y1", -20).attr("x2", 0).attr("y2", 20).attr("stroke", "#333").attr("marker-end", "url(#arrowhead)");
+        g.append("text").attr("y", 50).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").text(topic.name === "Change of Voice" ? "Passive Voice" : "Indirect Speech");
+      }
+
+      // VERBAL ANALOGIES
+      if (topic.name === "Verbal Analogies") {
+        const g = svg.append("g").attr("transform", `translate(${centerX}, ${centerY})`);
+        g.append("text").attr("x", -100).attr("text-anchor", "middle").text("Bird : Fly");
+        g.append("text").attr("x", 0).attr("text-anchor", "middle").text("::");
+        g.append("text").attr("x", 100).attr("text-anchor", "middle").text("Fish : ?");
+        if (step > 0) {
+          g.append("text").attr("x", 100).attr("y", 30).attr("text-anchor", "middle").attr("fill", "#10B981").attr("font-weight", "bold").text("Swim");
+        }
+      }
     };
 
     renderViz(vizRef, 400, 300);
@@ -713,7 +1238,7 @@ export default function TopicLearning() {
     if (!topic) return [];
     
     switch(topic.name) {
-      case "Percentages":
+      case "Percentage":
         return [
           {
             title: "The Core Concept",
@@ -729,6 +1254,92 @@ export default function TopicLearning() {
             title: "Practical Application",
             content: "If a shirt costs $100 and has a 25% discount, you save $25. The new price is $75.",
             tip: "Always identify the 'Whole' (100%) first."
+          }
+        ];
+      case "Profit and Loss":
+        return [
+          {
+            title: "Basic Terminology",
+            content: "Cost Price (CP) is the price at which an article is purchased. Selling Price (SP) is the price at which it is sold.",
+            tip: "Profit = SP - CP (if SP > CP)"
+          },
+          {
+            title: "Calculating Profit",
+            content: "When SP is greater than CP, there is a profit. The visual shows how the SP bar exceeds the CP bar.",
+            tip: "Profit% = (Profit / CP) * 100"
+          },
+          {
+            title: "Calculating Loss",
+            content: "When CP is greater than SP, there is a loss. The visual shows the SP bar falling below the CP level.",
+            tip: "Loss% = (Loss / CP) * 100"
+          }
+        ];
+      case "Simple Interest":
+        return [
+          {
+            title: "Principal and Rate",
+            content: "Simple Interest is calculated only on the initial amount (principal) you borrowed or deposited.",
+            tip: "SI = (P × R × T) / 100"
+          },
+          {
+            title: "Linear Growth",
+            content: "The interest stays the same for every time period. It grows linearly over time.",
+            tip: "Total Amount = Principal + Simple Interest"
+          }
+        ];
+      case "Compound Interest":
+        return [
+          {
+            title: "Interest on Interest",
+            content: "Compound interest is calculated on the principal amount and also on the accumulated interest of previous periods.",
+            tip: "A = P(1 + R/100)ⁿ"
+          },
+          {
+            title: "Exponential Growth",
+            content: "Unlike simple interest, compound interest grows exponentially. The more frequent the compounding, the higher the interest.",
+            tip: "CI = Amount - Principal"
+          }
+        ];
+      case "Partnership":
+        return [
+          {
+            title: "Investment Ratio",
+            content: "In a partnership, profits are generally shared in the ratio of the capital invested by each partner.",
+            tip: "Profit Share ∝ Investment × Time"
+          }
+        ];
+      case "Ratio and Proportion":
+        return [
+          {
+            title: "Understanding Ratios",
+            content: "A ratio is a way to compare two or more quantities of the same kind. It shows how many times one value contains another.",
+            tip: "Ratios can be written as a:b or a/b."
+          },
+          {
+            title: "Proportionality",
+            content: "When two ratios are equal, they are said to be in proportion. For example, 2:3 is proportional to 4:6.",
+            tip: "Think of ratios as 'parts' of a whole."
+          },
+          {
+            title: "Scaling Quantities",
+            content: "Ratios help us scale quantities up or down while maintaining the same relationship between parts.",
+            tip: "Multiplying both sides by the same number keeps the ratio same."
+          }
+        ];
+      case "Average":
+        return [
+          {
+            title: "The Mean",
+            content: "Average is the sum of all observations divided by the total number of observations.",
+            tip: "Average = Sum / Count"
+          }
+        ];
+      case "Problems on Ages":
+        return [
+          {
+            title: "Age Relationships",
+            content: "Solving problems involving ages of people at different points in time.",
+            tip: "If present age is x, age 'n' years ago was (x-n) and 'n' years later will be (x+n)."
           }
         ];
       case "Time and Work":
@@ -749,7 +1360,15 @@ export default function TopicLearning() {
             tip: "More workers = Higher Rate = Less Time"
           }
         ];
-      case "Speed and Distance":
+      case "Pipes and Cistern":
+        return [
+          {
+            title: "Inlet and Outlet",
+            content: "Inlet pipes fill the tank (positive work), while outlet pipes empty it (negative work).",
+            tip: "Net work = Inlet rate - Outlet rate"
+          }
+        ];
+      case "Time and Distance":
         return [
           {
             title: "Speed Concept",
@@ -767,40 +1386,86 @@ export default function TopicLearning() {
             tip: "1 km/h = 5/18 m/s"
           }
         ];
-      case "Ratios":
+      case "Problems on Trains":
         return [
           {
-            title: "Understanding Ratios",
-            content: "A ratio is a way to compare two or more quantities of the same kind. It shows how many times one value contains another.",
-            tip: "Ratios can be written as a:b or a/b."
-          },
-          {
-            title: "Proportionality",
-            content: "When two ratios are equal, they are said to be in proportion. For example, 2:3 is proportional to 4:6.",
-            tip: "Think of ratios as 'parts' of a whole."
-          },
-          {
-            title: "Scaling Quantities",
-            content: "Ratios help us scale quantities up or down while maintaining the same relationship between parts.",
-            tip: "Multiplying both sides by the same number keeps the ratio same."
+            title: "Relative Speed",
+            content: "When two trains move, their relative speed depends on whether they are moving in the same or opposite directions.",
+            tip: "Opposite direction: Add speeds; Same direction: Subtract speeds."
           }
         ];
-      case "Profit and Loss":
+      case "Boats and Streams":
         return [
           {
-            title: "Basic Terminology",
-            content: "Cost Price (CP) is the price at which an article is purchased. Selling Price (SP) is the price at which it is sold.",
-            tip: "Profit = SP - CP (if SP > CP)"
+            title: "Upstream and Downstream",
+            content: "Downstream is moving with the flow (Speed = Boat + Stream). Upstream is moving against the flow (Speed = Boat - Stream).",
+            tip: "Speed in still water = (Downstream + Upstream) / 2"
+          }
+        ];
+      case "Alligation or Mixture":
+        return [
+          {
+            title: "Mixing Ingredients",
+            content: "Alligation is a rule that enables us to find the ratio in which two or more ingredients at the given price must be mixed to produce a mixture of a specified price.",
+            tip: "Cheaper : Dearer = (Dearer Price - Mean Price) : (Mean Price - Cheaper Price)"
+          }
+        ];
+      case "Chain Rule":
+        return [
+          {
+            title: "Proportions",
+            content: "Chain rule deals with direct and indirect proportions between multiple variables.",
+            tip: "Direct: x/y = k; Indirect: xy = k"
+          }
+        ];
+      case "Decimal Fraction":
+        return [
+          {
+            title: "Decimals",
+            content: "Fractions whose denominators are powers of 10 are called decimal fractions.",
+            tip: "0.1 = 1/10, 0.01 = 1/100"
+          }
+        ];
+      case "Simplification":
+        return [
+          {
+            title: "Order of Operations",
+            content: "BODMAS rule: Brackets, Orders, Division, Multiplication, Addition, Subtraction.",
+            tip: "Always solve from left to right for same precedence operations."
+          }
+        ];
+      case "Square Root and Cube Root":
+        return [
+          {
+            title: "Roots",
+            content: "The square root of a number is a value that, when multiplied by itself, gives the original number.",
+            tip: "Perfect squares end in 0, 1, 4, 5, 6, or 9."
+          }
+        ];
+      case "Problems on Numbers":
+        return [
+          {
+            title: "Number Systems",
+            content: "Understanding different types of numbers like natural, whole, integers, rational, and irrational numbers.",
+            tip: "Prime numbers only have two factors: 1 and itself."
           },
           {
-            title: "Calculating Profit",
-            content: "When SP is greater than CP, there is a profit. The visual shows how the SP bar exceeds the CP bar.",
-            tip: "Profit% = (Profit / CP) * 100"
+            title: "Divisibility Rules",
+            content: "Quick ways to check if a number is divisible by another without full division.",
+            tip: "A number is divisible by 3 if the sum of its digits is divisible by 3."
           },
           {
-            title: "Calculating Loss",
-            content: "When CP is greater than SP, there is a loss. The visual shows the SP bar falling below the CP level.",
-            tip: "Loss% = (Loss / CP) * 100"
+            title: "Sum of Series",
+            content: "Calculating the sum of first 'n' natural numbers, squares, or cubes using standard formulas.",
+            tip: "Sum of first n natural numbers = n(n+1)/2"
+          }
+        ];
+      case "Problems on H.C.F and L.C.M":
+        return [
+          {
+            title: "Factors and Multiples",
+            content: "HCF is the largest number that divides two or more numbers. LCM is the smallest number divisible by two or more numbers.",
+            tip: "Product of two numbers = HCF × LCM"
           }
         ];
       case "Permutation and Combination":
@@ -920,19 +1585,6 @@ export default function TopicLearning() {
             tip: "The two angles are equal if the lines are parallel."
           }
         ];
-      case "Numbers":
-        return [
-          {
-            title: "Types of Numbers",
-            content: "Numbers can be classified into Natural, Whole, Integers, Rational, and Irrational numbers.",
-            tip: "Prime numbers have exactly two factors: 1 and itself."
-          },
-          {
-            title: "Divisibility Rules",
-            content: "Knowing divisibility rules (like for 2, 3, 5, 9) helps in quick calculations.",
-            tip: "A number is divisible by 3 if the sum of its digits is divisible by 3."
-          }
-        ];
       case "Races and Games":
         return [
           {
@@ -998,22 +1650,286 @@ export default function TopicLearning() {
             tip: "Look for properties like even/odd, prime/composite, or multiples."
           }
         ];
-      case "Syllogisms":
+      case "Syllogism":
         return [
           {
-            title: "Logical Foundations",
-            content: "Syllogisms are logical arguments that apply deductive reasoning to arrive at a conclusion based on two or more propositions that are asserted or assumed to be true.",
-            tip: "Focus on the relationship between sets."
+            title: "Venn Diagram Method",
+            content: "Syllogism is a form of deductive reasoning where you arrive at a specific conclusion by examining two or more general premises.",
+            tip: "Always use Venn diagrams to visualize the relationships between sets."
           },
           {
-            title: "Types of Statements",
-            content: "There are four standard types: Universal Affirmative (All A are B), Universal Negative (No A are B), Particular Affirmative (Some A are B), and Particular Negative (Some A are not B).",
-            tip: "Venn diagrams are the best way to visualize these."
+            title: "Universal vs Particular",
+            content: "Premises can be Universal (All/None) or Particular (Some/Some Not). The overlap in the Venn diagram represents the logical connection.",
+            tip: "If 'All A are B' and 'All B are C', then 'All A are C'."
           },
           {
             title: "Interactive Solver",
             content: "Use the tool below to input your own premises and see how they interact visually. This helps in identifying valid conclusions.",
             tip: "Try combining 'All' and 'Some' statements."
+          }
+        ];
+      case "Logical Sequence of Words":
+        return [
+          {
+            title: "Meaningful Order",
+            content: "Arranging a group of words in a logical sequence based on their meaning, size, or occurrence.",
+            tip: "Look for a natural progression, like a life cycle or a manufacturing process."
+          }
+        ];
+      case "Blood Relation Test":
+        return [
+          {
+            title: "Family Tree",
+            content: "Blood relation problems involve deciphering complex family ties. Drawing a family tree is the best way to solve them.",
+            tip: "Use symbols: Square for Male, Circle for Female, Horizontal line for siblings, Vertical for generations."
+          }
+        ];
+      case "Series Completion":
+        return [
+          {
+            title: "Pattern Recognition",
+            content: "Identifying the rule that governs a series of numbers or letters and finding the next term.",
+            tip: "Check for differences, squares, cubes, or alternating patterns."
+          }
+        ];
+      case "Cause and Effect":
+        return [
+          {
+            title: "Logical Connection",
+            content: "Determining whether one event (cause) leads to another (effect), or if they are independent.",
+            tip: "Ask 'Why did this happen?' to find the cause."
+          }
+        ];
+      case "Dice":
+        return [
+          {
+            title: "Spatial Visualization",
+            content: "Visualizing the faces of a dice and identifying which numbers are opposite to each other.",
+            tip: "If two faces are common in two positions, the third faces are opposite to each other."
+          }
+        ];
+      case "Venn Diagrams":
+        return [
+          {
+            title: "Set Relationships",
+            content: "Using overlapping circles to represent the logical relationship between different groups or sets.",
+            tip: "The intersection represents elements that belong to both sets."
+          }
+        ];
+      case "Cube and Cuboid":
+        return [
+          {
+            title: "3D Reasoning",
+            content: "Solving problems related to cutting, painting, and counting small cubes within a larger cube.",
+            tip: "A cube cut into n³ small cubes has (n-2)³ cubes with no faces painted."
+          }
+        ];
+      case "Analogy":
+        return [
+          {
+            title: "Finding Similarities",
+            content: "Identifying the relationship between a given pair and applying it to find a matching pair.",
+            tip: "The relationship can be synonyms, antonyms, worker-tool, cause-effect, etc."
+          }
+        ];
+      case "Seating Arrangement":
+        return [
+          {
+            title: "Positional Logic",
+            content: "Arranging people or objects in a row or around a table based on given constraints.",
+            tip: "Start with the most definite piece of information given in the problem."
+          }
+        ];
+      case "Character Puzzles":
+        return [
+          {
+            title: "Symbolic Logic",
+            content: "Solving puzzles where numbers or letters are arranged in a specific pattern within a shape.",
+            tip: "Look for mathematical operations between adjacent or opposite characters."
+          }
+        ];
+      case "Direction Sense Test":
+        return [
+          {
+            title: "Cardinal Directions",
+            content: "Navigating through a series of turns and movements to find the final position or direction.",
+            tip: "Always draw a small compass (N, S, E, W) to keep track of turns."
+          }
+        ];
+      case "Classification":
+        return [
+          {
+            title: "Odd One Out",
+            content: "Identifying the element that does not belong to a given group based on a common property.",
+            tip: "Find the property that links all but one of the items."
+          }
+        ];
+      case "Data Sufficiency":
+        return [
+          {
+            title: "Sufficiency Logic",
+            content: "Determining if the provided statements are enough to answer the question, without necessarily solving it.",
+            tip: "Check each statement individually first, then combine them if needed."
+          }
+        ];
+      case "Arithmetic Reasoning":
+        return [
+          {
+            title: "Math-Logic Hybrid",
+            content: "Solving word problems that require both basic mathematical calculations and logical reasoning.",
+            tip: "Translate the word problem into simple algebraic equations."
+          }
+        ];
+      case "Spotting Errors":
+        return [
+          {
+            title: "Grammar Rules",
+            content: "Identifying errors in grammar, syntax, or usage within a sentence.",
+            tip: "Check for subject-verb agreement and correct tense usage."
+          }
+        ];
+      case "Synonyms":
+        return [
+          {
+            title: "Similar Meanings",
+            content: "Finding words that have the same or nearly the same meaning as a given word.",
+            tip: "Use the word in a sentence to see which option fits best."
+          }
+        ];
+      case "Antonyms":
+        return [
+          {
+            title: "Opposite Meanings",
+            content: "Finding words that have the opposite meaning of a given word.",
+            tip: "Be careful not to choose a synonym by mistake."
+          }
+        ];
+      case "Selecting Words":
+        return [
+          {
+            title: "Contextual Fit",
+            content: "Choosing the most appropriate word to fill a blank based on the context of the sentence.",
+            tip: "Read the whole sentence before looking at the options."
+          }
+        ];
+      case "Spellings":
+        return [
+          {
+            title: "Correct Orthography",
+            content: "Identifying the correctly or incorrectly spelled word from a given set.",
+            tip: "Break long words into syllables to check their spelling."
+          }
+        ];
+      case "Sentence Formation":
+        return [
+          {
+            title: "Syntactic Structure",
+            content: "Constructing a grammatically correct and meaningful sentence from given fragments.",
+            tip: "Identify the subject and verb first."
+          }
+        ];
+      case "Ordering of Words":
+        return [
+          {
+            title: "Sentence Coherence",
+            content: "Arranging a jumbled set of words into a coherent and logical sentence.",
+            tip: "Look for connecting words like 'and', 'but', 'because'."
+          }
+        ];
+      case "Sentence Correction":
+        return [
+          {
+            title: "Error Rectification",
+            content: "Identifying the incorrect part of a sentence and replacing it with the correct version.",
+            tip: "Focus on common errors like pronoun usage and prepositions."
+          }
+        ];
+      case "Sentence Improvement":
+        return [
+          {
+            title: "Refining Expression",
+            content: "Choosing a better way to express a thought or correcting a subtle grammatical error.",
+            tip: "The shortest correct answer is often the best one."
+          }
+        ];
+      case "Completing Statements":
+        return [
+          {
+            title: "Logical Completion",
+            content: "Filling in the blanks to complete a statement so that it makes logical sense.",
+            tip: "Look for logical markers like 'therefore', 'however', 'consequently'."
+          }
+        ];
+      case "Ordering of Sentences":
+        return [
+          {
+            title: "Paragraph Logic",
+            content: "Arranging a set of jumbled sentences into a logical and coherent paragraph.",
+            tip: "Find the opening sentence, which is usually a general statement."
+          }
+        ];
+      case "Paragraph Formation":
+        return [
+          {
+            title: "Cohesive Writing",
+            content: "Building a paragraph by linking sentences through logical transitions.",
+            tip: "The last sentence usually concludes the thought."
+          }
+        ];
+      case "Cloze Test":
+        return [
+          {
+            title: "Contextual Blanks",
+            content: "Filling in multiple blanks within a passage to restore its original meaning.",
+            tip: "Read the entire passage once to get the overall theme."
+          }
+        ];
+      case "Comprehension":
+        return [
+          {
+            title: "Textual Analysis",
+            content: "Reading a passage and answering questions based on the information provided.",
+            tip: "Read the questions first, then scan the passage for answers."
+          }
+        ];
+      case "One Word Substitutes":
+        return [
+          {
+            title: "Vocabulary Precision",
+            content: "Replacing a long phrase or description with a single, precise word.",
+            tip: "Many substitutes are derived from Latin or Greek roots."
+          }
+        ];
+      case "Idioms and Phrases":
+        return [
+          {
+            title: "Figurative Language",
+            content: "Understanding expressions whose meaning is not predictable from the literal definitions of its words.",
+            tip: "Learn idioms in groups based on themes like 'animals' or 'colors'."
+          }
+        ];
+      case "Change of Voice":
+        return [
+          {
+            title: "Active vs Passive",
+            content: "Converting sentences from active voice to passive voice and vice versa.",
+            tip: "The object of the active sentence becomes the subject of the passive one."
+          }
+        ];
+      case "Change of Speech":
+        return [
+          {
+            title: "Direct vs Indirect",
+            content: "Converting direct speech into indirect (reported) speech and vice versa.",
+            tip: "Remember to change tenses, pronouns, and time markers."
+          }
+        ];
+      case "Verbal Analogies":
+        return [
+          {
+            title: "Word Relationships",
+            content: "Identifying the relationship between a pair of words and finding another pair with a similar relationship.",
+            tip: "Define the relationship in a simple sentence (e.g., 'A is a type of B')."
           }
         ];
       default:
@@ -1131,7 +2047,7 @@ export default function TopicLearning() {
         </div>
       </div>
 
-      {topic.name === "Syllogisms" && step === steps.length - 1 && (
+      {topic.name === "Syllogism" && step === steps.length - 1 && (
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
